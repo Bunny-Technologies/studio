@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "De-Addiction Quiz",
-  description: "A quiz to help students build healthier digital habits.",
+  title: "Jagruthi Quiz",
+  description: "A quiz to help students in Telangana build healthier digital habits.",
 };
 
 export default function RootLayout({

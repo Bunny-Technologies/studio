@@ -225,16 +225,16 @@ export type LeaderboardEntry = {
 };
 
 export const leaderboardEntries: LeaderboardEntry[] = [
-  { uid: "abc123", rank: 1, displayName: "Ravi Kumar", score: 96, avatarUrl: "https://placehold.co/40x40.png" },
-  { uid: "def456", rank: 2, displayName: "Priya Sharma", score: 92, avatarUrl: "https://placehold.co/40x40.png" },
-  { uid: "ghi789", rank: 3, displayName: "Arjun Singh", score: 92, avatarUrl: "https://placehold.co/40x40.png" },
-  { uid: "jkl012", rank: 4, displayName: "Ananya Gupta", score: 88, avatarUrl: "https://placehold.co/40x40.png" },
-  { uid: "mno345", rank: 5, displayName: "Vikram Reddy", score: 85, avatarUrl: "https://placehold.co/40x40.png" },
-  { uid: "pqr678", rank: 6, displayName: "Sneha Patel", score: 81, avatarUrl: "https://placehold.co/40x40.png" },
-  { uid: "stu901", rank: 7, displayName: "Rohan Desai", score: 77, avatarUrl: "https://placehold.co/40x40.png" },
-  { uid: "vwx234", rank: 8, displayName: "Meera Iyer", score: 75, avatarUrl: "https://placehold.co/40x40.png" },
-  { uid: "yza567", rank: 9, displayName: "Aditya Joshi", score: 70, avatarUrl: "https://placehold.co/40x40.png" },
-  { uid: "bcd890", rank: 10, displayName: "Fatima Khan", score: 66, avatarUrl: "https://placehold.co/40x40.png" },
+  { uid: "abc123", rank: 1, displayName: "Ramarao", score: 96, avatarUrl: "https://placehold.co/40x40.png" },
+  { uid: "def456", rank: 2, displayName: "Anitha", score: 92, avatarUrl: "https://placehold.co/40x40.png" },
+  { uid: "ghi789", rank: 3, displayName: "Venkat", score: 92, avatarUrl: "https://placehold.co/40x40.png" },
+  { uid: "jkl012", rank: 4, displayName: "Sravya", score: 88, avatarUrl: "https://placehold.co/40x40.png" },
+  { uid: "mno345", rank: 5, displayName: "Prasad", score: 85, avatarUrl: "https://placehold.co/40x40.png" },
+  { uid: "pqr678", rank: 6, displayName: "Lakshmi", score: 81, avatarUrl: "https://placehold.co/40x40.png" },
+  { uid: "stu901", rank: 7, displayName: "Narender", score: 77, avatarUrl: "https://placehold.co/40x40.png" },
+  { uid: "vwx234", rank: 8, displayName: "Bhavani", score: 75, avatarUrl: "https://placehold.co/40x40.png" },
+  { uid: "yza567", rank: 9, displayName: "Rajesh", score: 70, avatarUrl: "https://placehold.co/40x40.png" },
+  { uid: "bcd890", rank: 10, displayName: "Sultana", score: 66, avatarUrl: "https://placehold.co/40x40.png" },
 ];
 
 export type Coupon = {
@@ -247,7 +247,7 @@ export type Coupon = {
 };
 
 export const userCoupons: Coupon[] = [
-  { id: "C10", title: "15% off Sports Shoes", sponsor: "XYZ Sports", description: "Get 15% off on your next purchase of premium running shoes.", validUntil: "2025-12-31", link: "#" },
-  { id: "C11", title: "Free Coffee", sponsor: "The Daily Grind", description: "Enjoy a free cup of coffee with any pastry purchase. Show this coupon to redeem.", validUntil: "2025-10-31", link: "#" },
-  { id: "C12", title: "20% off Books", sponsor: "Readers' Haven", description: "Expand your mind with 20% off any book in our store.", validUntil: "2025-11-30", link: "#" },
+  { id: "C10", title: "15% off on Traditional Wear", sponsor: "Kalamandir", description: "Get 15% off on your next purchase of traditional wear.", validUntil: "2025-12-31", link: "#" },
+  { id: "C11", title: "Free Dessert with Biryani", sponsor: "Paradise Biryani", description: "Enjoy a free Double ka Meetha with any Biryani purchase. Show this coupon to redeem.", validUntil: "2025-10-31", link: "#" },
+  { id: "C12", title: "20% off Books", sponsor: "Walden Books", description: "Expand your mind with 20% off any book in our store.", validUntil: "2025-11-30", link: "#" },
 ];

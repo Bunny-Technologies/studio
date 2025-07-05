@@ -19,7 +19,7 @@ import {
   Trophy,
   Ticket,
   LogOut,
-  BrainCircuit,
+  Landmark,
   User,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -34,8 +34,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2 p-2">
-            <BrainCircuit className="w-8 h-8 text-primary" />
-            <h1 className="text-2xl font-bold font-headline">De-Addiction</h1>
+            <Landmark className="w-8 h-8 text-primary" />
+            <h1 className="text-2xl font-bold font-headline">Jagruthi</h1>
           </div>
         </SidebarHeader>
         <SidebarContent>
