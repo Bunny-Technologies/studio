@@ -3,11 +3,7 @@ import type { Timestamp } from 'firebase/firestore';
 export interface UserProfile {
   uid: string;
   name: string;
-  age: number;
-  class: string;
   school: string;
-  area: string;
-  phone: string;
   idNo: string;
   pointsTotal: number;
 }

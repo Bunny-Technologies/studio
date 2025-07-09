@@ -37,11 +37,7 @@
     "title": "Student Login",
     "description": "Please enter your details to participate.",
     "name": "Name",
-    "age": "Age",
-    "class": "Class",
     "school": "School",
-    "area": "Area",
-    "phone": "Phone Number",
     "idNo": "ID Number",
     "submit": "Submit"
   }
