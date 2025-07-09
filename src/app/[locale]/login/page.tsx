@@ -39,7 +39,7 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       name: '',
-      age: undefined,
+      age: '',
       class: '',
       school: '',
       area: '',
