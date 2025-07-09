@@ -16,7 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import type { Category, Suggestion } from '@/lib/types';
 
-// Mock Data - In a real app, this would come from Firestore
+// Mock Data
 const categories: Category[] = [
   { id: '1', nameEn: 'Health Topics', nameTe: 'ఆరోగ్య అంశాలు', icon: 'HeartPulse' },
   { id: '2', nameEn: 'Science & Tech', nameTe: 'సైన్స్ & టెక్', icon: 'FlaskConical' },
@@ -45,7 +45,7 @@ const searchChips = [
     "Medals",
     "Competitive Exams",
     "Civics"
-]
+];
 
 const iconMap: { [key: string]: React.ElementType } = {
   HeartPulse,
@@ -59,17 +59,33 @@ const iconMap: { [key: string]: React.ElementType } = {
 
 function DateChip() {
   return (
-    <div className="bg-secondary text-secondary-foreground font-semibold px-4 py-2 rounded-full text-sm">
+    <div className="bg-secondary text-secondary-foreground font-semibold px-4 py-2 rounded-full text-sm shrink-0">
       {format(new Date(), 'dd MMM yyyy')}
     </div>
   );
 }
 
+function LeftSidebar() {
+    const t = useTranslations('Dashboard');
+    return (
+        <aside className="hidden lg:flex flex-col items-center w-24 bg-card border-r py-4 sticky top-0 h-screen">
+            <nav className="flex flex-col items-center gap-4 mt-8">
+                {[t('scholarships'), t('events'), t('quiz_winners'), t('enquiry')].map((item, index) => (
+                    <a key={index} href="#" className="flex flex-col items-center gap-1 text-center text-xs font-medium text-muted-foreground hover:text-primary transition-colors">
+                        <Star className="h-6 w-6"/>
+                        <span>{item}</span>
+                    </a>
+                ))}
+            </nav>
+      </aside>
+    );
+}
+
 function CategoryTile({ category }: { category: Category }) {
   const Icon = iconMap[category.icon] || BookOpen;
   return (
-    <Card className="hover:bg-secondary transition-colors cursor-pointer">
-      <CardContent className="flex flex-col items-center justify-center p-4 gap-2">
+    <Card className="hover:bg-secondary transition-colors cursor-pointer aspect-square">
+      <CardContent className="flex flex-col items-center justify-center p-4 gap-2 h-full">
         <Icon className="h-8 w-8 text-primary" />
         <span className="text-center font-medium text-sm">{category.nameEn}</span>
         <span className="text-center text-xs text-muted-foreground">{category.nameTe}</span>
@@ -84,7 +100,7 @@ function LiveStreamCard() {
     const liveYoutubeId = "jfKfPfyJRdk"; // Example ID
 
     return (
-        <Card className="col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-2 row-span-2">
+        <Card>
             <CardHeader>
                 <CardTitle>{t('live_streaming')}</CardTitle>
             </CardHeader>
@@ -104,40 +120,10 @@ function LiveStreamCard() {
     );
 }
 
-export default function DashboardPage() {
-  const t = useTranslations('Dashboard');
-
-  return (
-    <div className="flex min-h-screen bg-background">
-      {/* Left Sidebar */}
-      <aside className="hidden md:flex flex-col items-center w-24 bg-card border-r py-4 sticky top-0 h-screen">
-        <nav className="flex flex-col items-center gap-4 mt-8">
-            {[t('scholarships'), t('events'), t('quiz_winners'), t('enquiry')].map((item, index) => (
-                 <a key={index} href="#" className="flex flex-col items-center gap-1 text-center text-xs font-medium text-muted-foreground hover:text-primary transition-colors">
-                     <Star className="h-6 w-6"/>
-                     <span>{item}</span>
-                 </a>
-            ))}
-        </nav>
-      </aside>
-
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-4 md:p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">{t('title')}</h1>
-            <DateChip />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 col-span-1 md:col-span-2 lg:col-span-4 xl:col-span-3">
-                {categories.map(cat => (
-                    <CategoryTile key={cat.id} category={cat} />
-                ))}
-            </div>
-            
-            <LiveStreamCard />
-
-            <Card className="col-span-1 md:col-span-2 lg:col-span-4 xl:col-span-3">
+function SuggestionsList({className}: {className?: string}) {
+    const t = useTranslations('Dashboard');
+    return (
+         <Card className={className}>
               <CardHeader>
                 <CardTitle>{t('valuable_suggestions')}</CardTitle>
               </CardHeader>
@@ -151,11 +137,33 @@ export default function DashboardPage() {
                 </ScrollArea>
               </CardContent>
             </Card>
+    )
+}
 
-          </div>
-        </main>
+function RightSidebar() {
+    const t = useTranslations('Dashboard');
+    return (
+        <aside className="hidden xl:block w-80 bg-card border-l p-4 sticky top-0 h-screen">
+            <div className="h-full flex flex-col">
+                <CardHeader className="px-2 pt-2">
+                    <CardTitle>{t('valuable_suggestions')}</CardTitle>
+                </CardHeader>
+                <ScrollArea className="flex-1">
+                    <CardContent className="px-2">
+                        <div className="space-y-4">
+                            {suggestions.map(sug => (
+                                <p key={sug.id} className="text-sm border-b pb-2">{sug.text}</p>
+                            ))}
+                        </div>
+                    </CardContent>
+                </ScrollArea>
+            </div>
+        </aside>
+    );
+}
 
-        {/* Bottom Search Ribbon */}
+function SearchRibbon() {
+    return (
         <footer className="sticky bottom-0 bg-card border-t p-2">
             <ScrollArea className="w-full whitespace-nowrap">
                 <div className="flex gap-2 pb-2">
@@ -168,7 +176,41 @@ export default function DashboardPage() {
                 <ScrollBar orientation="horizontal" />
             </ScrollArea>
         </footer>
+    );
+}
+
+
+export default function DashboardPage() {
+  const t = useTranslations('Dashboard');
+
+  return (
+    <div className="flex min-h-screen bg-background">
+      <LeftSidebar />
+
+      <div className="flex-1 flex flex-col min-w-0">
+        <main className="flex-1 p-4 md:p-6 overflow-y-auto">
+          <div className="flex items-center gap-4 mb-6">
+            <DateChip />
+            <h1 className="text-3xl font-bold">{t('title')}</h1>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4">
+                {categories.map(cat => (
+                    <CategoryTile key={cat.id} category={cat} />
+                ))}
+            </div>
+            <div className="lg:col-span-1 row-start-1 lg:row-start-auto">
+                <LiveStreamCard />
+            </div>
+          </div>
+          <SuggestionsList className="mt-6 xl:hidden" />
+        </main>
+
+        <SearchRibbon />
       </div>
+
+      <RightSidebar />
     </div>
   );
 }
