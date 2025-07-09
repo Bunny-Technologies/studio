@@ -1,109 +1,127 @@
+'use client';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import type { Question } from '@/lib/types';
 
-// Mock Data
+// Mock Data based on the image
 const dailyQuestions: Question[] = Array.from({ length: 25 }, (_, i) => ({
     id: `q${i + 1}`,
-    text: `Question ${i + 1}: Who was the first Prime Minister of India? This is a sample question text that might be long enough to wrap to multiple lines.`,
-    options: ['Jawaharlal Nehru', 'Sardar Vallabhbhai Patel', 'Mahatma Gandhi'],
+    text: `Question ${i + 1}: This is a sample question text...`,
+    options: ['Option A', 'Option B', 'Option C'],
     correctIndex: 0,
     category: 'GK',
     difficulty: 'easy',
 }));
 
-function StudentHeaderCard() {
-  const t = useTranslations('Quiz');
-  return (
-    <Card className="mb-4">
-      <CardHeader>
-        <CardTitle className="text-xl">{t('student_login')}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex justify-between items-center mb-4 flex-wrap gap-4">
-          <div className="flex items-center gap-2">
-            <Label htmlFor="date">{t('daily_quiz_date')}</Label>
-            <Input id="date" type="text" className="w-32" defaultValue={new Date().toLocaleDateString()} />
-          </div>
+
+function DottedLineInput({ label, className }: { label: string, className?: string }) {
+    return (
+        <div className={`flex items-end gap-2 ${className}`}>
+            <label className="text-sm font-medium whitespace-nowrap">{label}:</label>
+            <div className="w-full border-b border-dotted border-gray-600 h-5"></div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-sm">
-          <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="name">{t('name')}</Label>
-            <Input type="text" id="name" />
-          </div>
-          <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="age">{t('age')}</Label>
-            <Input type="number" id="age" />
-          </div>
-          <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="class">{t('class')}</Label>
-            <Input type="text" id="class" />
-          </div>
-          <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="school">{t('school')}</Label>
-            <Input type="text" id="school" />
-          </div>
-          <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="idNo">{t('id_no')}</Label>
-            <Input type="text" id="idNo" />
-          </div>
-          <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="phone">{t('phone_no')}</Label>
-            <Input type="tel" id="phone" />
-          </div>
-           <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="area">{t('area')}</Label>
-            <Input type="text" id="area" />
-          </div>
-           <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="points">{t('points_obtained')}</Label>
-            <Input type="text" id="points" readOnly />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
+    )
 }
 
-function QuestionCard({ question, index }: { question: Question; index: number }) {
-  // State for result would be handled here in a real app
+function StudentHeader() {
+    return (
+        <div className="border-2 border-blue-400 rounded-lg p-3 mb-4">
+            <div className="flex justify-between items-center mb-2">
+                <h2 className="font-bold text-lg">Student Login:</h2>
+                <div className="flex items-center gap-2">
+                    <label className="font-bold">Daily Quiz :</label>
+                    <div className="border-2 rounded-md w-24 h-6 bg-gray-100"></div>
+                     <label className="font-bold">Date :</label>
+                    <div className="border-2 rounded-md w-24 h-6 bg-gray-100"></div>
+                </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                <div className="grid grid-cols-[auto_1fr] items-end gap-2">
+                    <label>Name</label><div className="border-b border-dotted border-gray-600 h-5"></div>
+                </div>
+                 <div className="grid grid-cols-[auto_1fr] items-end gap-2">
+                    <label>Age</label><div className="border-b border-dotted border-gray-600 h-5"></div>
+                </div>
+                 <div className="grid grid-cols-[auto_1fr] items-end gap-2">
+                    <label>School</label><div className="border-b border-dotted border-gray-600 h-5"></div>
+                </div>
+                 <div className="grid grid-cols-[auto_1fr] items-end gap-2">
+                    <label>Class</label><div className="border-b border-dotted border-gray-600 h-5"></div>
+                </div>
+                <div className="grid grid-cols-[auto_1fr_auto_1fr] items-end gap-2">
+                    <label>ID No.</label><div className="border-b border-dotted border-gray-600 h-5"></div>
+                    <label>Ph.No.</label><div className="border-b border-dotted border-gray-600 h-5"></div>
+                </div>
+                 <div className="grid grid-cols-[auto_1fr_auto_1fr] items-end gap-2">
+                    <label>Area</label><div className="border-b border-dotted border-gray-600 h-5"></div>
+                    <label>Points obtained</label><div className="border-b border-dotted border-gray-600 h-5"></div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function QuestionRow({ question, index }: { question: Question; index: number }) {
   return (
-    <Card>
-      <CardContent className="p-4">
-        <div className="flex gap-4">
-          <div className="font-medium align-top">{`Q.${index + 1}`}</div>
-          <div className="flex-1">
-            <p className="mb-4 font-semibold">{question.text}</p>
-            <RadioGroup className="flex flex-col gap-3">
+    <div className="grid grid-cols-[auto_1fr_auto] items-start gap-x-4 py-2 border-b border-gray-200">
+        <div className="font-semibold pt-1">{`Q.${index + 1})`}</div>
+        <div>
+            <p className="font-medium mb-2">{question.text}</p>
+            <RadioGroup className="flex flex-col sm:flex-row gap-x-6 gap-y-1">
               {question.options.map((option, i) => (
-                <div key={i} className="flex items-center space-x-3">
+                <div key={i} className="flex items-center space-x-2">
                   <RadioGroupItem value={`${i}`} id={`q${index}-o${i}`} />
-                  <Label htmlFor={`q${index}-o${i}`} className="font-normal">{`${String.fromCharCode(97 + i)}) ${option}`}</Label>
+                  <Label htmlFor={`q${index}-o${i}`} className="font-normal">{`${String.fromCharCode(97 + i)})`}</Label>
+                   <div className="w-28 border-b border-dotted border-gray-500"></div>
                 </div>
               ))}
             </RadioGroup>
-          </div>
         </div>
-        <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-dashed">
-            <div className="text-center text-sm text-muted-foreground">Result: (.........)</div>
-            <div className="text-center text-sm text-muted-foreground">Right: (.........)</div>
-            <div className="text-center text-sm text-muted-foreground">Score: (.........)</div>
+         <div className="flex gap-2 text-sm text-center pt-1">
+            <span className="w-20">(.........)</span>
+            <span className="w-20">(.........)</span>
+            <span className="w-20">(.........)</span>
         </div>
-      </CardContent>
-    </Card>
+    </div>
   );
 }
+
+function ResultHeader() {
+    return (
+        <div className="grid grid-cols-[1fr_auto] gap-x-4 mb-2">
+            <div></div>
+            <div className="flex gap-2 text-sm font-bold text-center">
+                <span className="w-20">Result</span>
+                <span className="w-20">Right</span>
+                <span className="w-20">Score/points</span>
+            </div>
+        </div>
+    )
+}
+
+function SubmitSection() {
+    return (
+        <div className="flex flex-col items-center mt-4 text-sm">
+             <div className="flex items-center gap-4">
+                <Button>Submit : >>>>>> </Button>
+                <div className="text-right">
+                    <p>Result : ................</p>
+                </div>
+            </div>
+            <p className="mt-2 font-semibold">Quiz contents: A). Health Topics B). Science & Technology C).Sports & Games D).G.K & Current Affairs E).History</p>
+        </div>
+    )
+}
+
 
 function PrivilegesBanner() {
     const t = useTranslations('Quiz');
     return (
-        <div className="mt-8 p-4 bg-yellow-100 text-yellow-900 rounded-md border border-yellow-200">
+        <div className="mt-8 p-4 bg-yellow-200 text-yellow-900 rounded-md border-2 border-yellow-400">
             <h3 className="font-bold text-center text-lg mb-2">{t('privileges_banner_title')}</h3>
-            <div className="text-sm space-y-1 prose prose-sm max-w-none">
+            <div className="text-sm space-y-1">
                 <p>{t('privileges_line_a')}</p>
                 <p>{t('privileges_line_b')}</p>
                 <p>{t('privileges_line_c')}</p>
@@ -117,21 +135,19 @@ export default function DailyQuizPage() {
   const t = useTranslations('Quiz');
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
-        <StudentHeaderCard />
+    <div className="min-h-screen bg-gray-100 p-2 sm:p-4 md:p-8">
+      <div className="max-w-5xl mx-auto bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+        <StudentHeader />
         
-        <div className="space-y-4">
+        <ResultHeader />
+        
+        <div className="space-y-1">
             {dailyQuestions.map((q, i) => (
-              <QuestionCard key={q.id} question={q} index={i} />
+              <QuestionRow key={q.id} question={q} index={i} />
             ))}
         </div>
         
-        <div className="fixed bottom-4 right-4 z-50">
-            <Button size="lg" className="shadow-2xl">
-              {t('submit')}
-            </Button>
-        </div>
+        <SubmitSection />
 
         <PrivilegesBanner />
       </div>
