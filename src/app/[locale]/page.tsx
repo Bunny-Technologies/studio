@@ -82,9 +82,10 @@ function RightNav() {
 }
 
 function HeaderInfo() {
-    const [time, setTime] = useState(new Date());
+    const [time, setTime] = useState<Date | null>(null);
 
     useEffect(() => {
+        setTime(new Date());
         const timerId = setInterval(() => setTime(new Date()), 1000);
         return () => clearInterval(timerId);
     }, []);
@@ -98,7 +99,7 @@ function HeaderInfo() {
                 <p className="text-center mt-1">Every month end an open debate will be conducted in your near by Jr.college for Event & Prizes** Relay in TV & social Media</p>
             </div>
             <div className="bg-sky-200 border-2 border-sky-400 p-2 rounded-lg flex flex-col items-center justify-center text-sm font-semibold text-sky-900">
-                <p>Today's: {format(time, 'HH:mm:ss')}</p>
+                <p>Today's: {time ? format(time, 'HH:mm:ss') : '00:00:00'}</p>
                 <Link href="/login" className="bg-gray-600/75 text-white px-6 py-1 my-1 rounded-md shadow-md hover:bg-gray-700/75">
                     Quiz Login
                 </Link>
