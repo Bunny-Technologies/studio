@@ -1,0 +1,48 @@
+{
+  "Dashboard": {
+    "title": "Dashboard",
+    "scholarships": "SCHOLARSHIPS",
+    "events": "EVENTS",
+    "quiz_winners": "QUIZ WINNERS",
+    "enquiry": "ENQUIRY",
+    "valuable_suggestions": "VALUABLE SUGGESTIONS",
+    "live_streaming": "LIVE STREAMING",
+    "search_chips": [
+      "Private schools (Play)",
+      "Electronic gadgets",
+      "GK & Current Affairs",
+      "Science & Technology",
+      "Health Topics"
+    ]
+  },
+  "Quiz": {
+    "title": "Daily Quiz",
+    "student_login": "Student Login",
+    "name": "Name",
+    "age": "Age",
+    "class": "Class",
+    "school": "School",
+    "id_no": "ID No.",
+    "phone_no": "Ph.No.",
+    "area": "Area",
+    "points_obtained": "Points obtained",
+    "submit": "Submit",
+    "privileges_banner_title": "Privileges and Rewards to Quiz Participants",
+    "privileges_line_a": "A). Daily Participants : 40 % to 50% Gift Vouchers on Gadgets + Gifts for first 1000 rankers",
+    "privileges_line_b": "B) 30 days regular participants : Month end gifts and felicitation at near by College.",
+    "privileges_line_c": "C) 365 days participants : Top 100 nos. 1 lakh Study Scholarship with Privilege Merit Card",
+    "privileges_footer": "Every month end an open debate will be conducted in your near by Jr.college for Event & Prizes** Relay in TV & social media. For more detail send your enquiries to : email: ........................@gmail.com"
+  },
+  "Login": {
+    "title": "Student Login",
+    "description": "Please enter your details to participate.",
+    "name": "Name",
+    "age": "Age",
+    "class": "Class",
+    "school": "School",
+    "area": "Area",
+    "phone": "Phone Number",
+    "idNo": "ID Number",
+    "submit": "Submit"
+  }
+}
