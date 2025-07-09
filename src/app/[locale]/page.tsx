@@ -1,112 +1,128 @@
+'use client';
 import { format } from 'date-fns';
 import { useTranslations } from 'next-intl';
-import {
-  BookOpen,
-  Clapperboard,
-  FlaskConical,
-  Globe,
-  HeartPulse,
-  Newspaper,
-  Scroll,
-  Star,
-} from 'lucide-react';
-
+import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import type { Category, Suggestion } from '@/lib/types';
 
-// Mock Data
-const categories: Category[] = [
-  { id: '1', nameEn: 'Health Topics', nameTe: 'ఆరోగ్య అంశాలు', icon: 'HeartPulse' },
-  { id: '2', nameEn: 'Science & Tech', nameTe: 'సైన్స్ & టెక్', icon: 'FlaskConical' },
-  { id: '3', nameEn: 'Sports & Games', nameTe: 'క్రీడలు & ఆటలు', icon: 'Clapperboard' },
-  { id: '4', nameEn: 'GK & Current', nameTe: 'GK & కరెంట్', icon: 'Newspaper' },
-  { id: '5', nameEn: 'History', nameTe: 'చరిత్ర', icon: 'Scroll' },
-  { id: '6', nameEn: 'Geography', nameTe: 'భూగోళశాస్త్రం', icon: 'Globe' },
-];
-
-const suggestions: Suggestion[] = [
-    { id: '1', text: 'Consider adding more questions about local Telangana history.'},
-    { id: '2', text: 'The live stream was very helpful for understanding the new scholarship.'},
-    { id: '3', text: 'Can we have a separate quiz for junior and senior classes?'},
-    { id: '4', text: 'The mobile view of the quiz page is excellent.'},
-    { id: '5', text: 'More events notifications would be great.'},
-];
-
-const searchChips = [
+// Mock Data based on the image
+const searchItems = [
     "Private schools (Play)",
+    "Private schools (Day care)",
+    "Private schools (Kinder Garden)",
+    "Private schools (Primary)",
+    "Private schools (Secondary)",
+    "Tuition Centers",
+    "Home Tutions (tutors)",
+    "Online Tutors",
+    "Child Psychologist",
+    "Pediatric Doctors & Hospitals",
+    "Book Publishers",
+    "Book Stalls",
     "Electronic gadgets",
-    "Scholarships",
-    "Events",
-    "GK & Current Affairs",
-    "Science & Technology",
-    "Health Topics",
-    "Medals",
-    "Competitive Exams",
-    "Civics"
+    "Teachers Training & Consultancy",
+    "Non-Teaching Staff Consultancy"
 ];
 
-const iconMap: { [key: string]: React.ElementType } = {
-  HeartPulse,
-  FlaskConical,
-  Clapperboard,
-  Newspaper,
-  Scroll,
-  Globe,
-  BookOpen,
-};
+const categories = [
+    { name: "SPORTS & GAMES", color: "bg-sky-300" },
+    { name: "TELUGU LANGUAGE", color: "bg-amber-300" },
+    { name: "ENGLISH LANGUAGE", color: "bg-amber-300" },
+    { name: "KIDS COMPUTER", color: "bg-orange-300" },
+    { name: "HINDI LANGUAGE", color: "bg-amber-300" },
+    { name: "MATHEMATICS SUBJECT", color: "bg-amber-300" },
+    { name: "NEW INVENTIONS", color: "bg-indigo-300" },
+    { name: "PHYSICAL SCIENCE", color: "bg-amber-300" },
+    { name: "CHEMISTRY", color: "bg-amber-300" },
+    { name: "GK current affairs", color: "bg-lime-400" },
+    { name: "BIOLOGY", color: "bg-amber-300" },
+    { name: "SOCIAL STUDIES", color: "bg-amber-300" },
+    { name: "SCIENCE & TECHNOLOGY", color: "bg-cyan-400" },
+    { name: "ROBOTICS", color: "bg-amber-300" },
+    { name: "COMPUTER SCIENCE", color: "bg-amber-300" },
+    { name: "HEALTH & EXERCISE", color: "bg-pink-400" },
+];
 
-function DateChip() {
-  return (
-    <div className="bg-secondary text-secondary-foreground font-semibold px-4 py-2 rounded-full text-sm shrink-0">
-      {format(new Date(), 'dd MMM yyyy')}
-    </div>
-  );
-}
+const topNavLinks = ["ABOUT US", "ASSOCIATES", "PROGRAMS", "SCHOLARSHIPS", "EVENTS", "QUIZ WINNERS", "ENQUIRY"];
 
-function LeftSidebar() {
-    const t = useTranslations('Dashboard');
+// Components recreated from the image
+function LeftNav() {
     return (
-        <aside className="hidden lg:flex flex-col items-center w-24 bg-card border-r py-4 sticky top-0 h-screen">
-            <nav className="flex flex-col items-center gap-4 mt-8">
-                {[t('scholarships'), t('events'), t('quiz_winners'), t('enquiry')].map((item, index) => (
-                    <a key={index} href="#" className="flex flex-col items-center gap-1 text-center text-xs font-medium text-muted-foreground hover:text-primary transition-colors">
-                        <Star className="h-6 w-6"/>
-                        <span>{item}</span>
-                    </a>
+        <aside className="w-64 bg-primary text-primary-foreground p-2 flex flex-col gap-2">
+            <div className="text-center py-2 border-b-2 border-blue-300">
+                <h2 className="text-xl font-bold">EDU QUIZ.WORLD</h2>
+            </div>
+            <div className="bg-yellow-400 text-black p-2 rounded-md text-xs font-semibold">
+                Privileges and Rewards to Quiz Participants
+            </div>
+            <div className="bg-blue-800 text-white p-2 rounded-md text-center font-bold">
+                SEARCH
+            </div>
+            <nav className="flex-1 flex flex-col gap-1">
+                {searchItems.map((item, index) => (
+                    <Button key={index} variant="secondary" className="justify-between h-8 text-xs">
+                        {item}
+                        <div className="border-t-[6px] border-b-[6px] border-l-[8px] border-transparent border-l-white"></div>
+                    </Button>
                 ))}
             </nav>
-      </aside>
+        </aside>
     );
 }
 
-function CategoryTile({ category }: { category: Category }) {
-  const Icon = iconMap[category.icon] || BookOpen;
-  return (
-    <Card className="hover:bg-secondary transition-colors cursor-pointer aspect-square">
-      <CardContent className="flex flex-col items-center justify-center p-4 gap-2 h-full">
-        <Icon className="h-8 w-8 text-primary" />
-        <span className="text-center font-medium text-sm">{category.nameEn}</span>
-        <span className="text-center text-xs text-muted-foreground">{category.nameTe}</span>
-      </CardContent>
-    </Card>
-  );
+function RightNav() {
+    return (
+        <aside className="w-8 bg-primary text-primary-foreground flex items-center justify-center">
+            <h2 className="writing-vertical-rl rotate-180 font-bold tracking-wider">
+                VALUABLE SUGGESTIONS
+            </h2>
+        </aside>
+    );
 }
 
-function LiveStreamCard() {
-    const t = useTranslations('Dashboard');
-    // In a real app, 'live_youtube_id' would be fetched from Firebase Remote Config
-    const liveYoutubeId = "jfKfPfyJRdk"; // Example ID
-
+function HeaderInfo() {
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>{t('live_streaming')}</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="aspect-w-16 aspect-h-9">
-                    <iframe 
+        <header className="col-span-2 grid grid-cols-2 gap-4 mb-2">
+            <div className="bg-yellow-200 border-2 border-yellow-400 p-2 rounded-lg text-xs text-yellow-900">
+                <p>A). Daily Participants: 40% to 50% Gift Vouchers on Gadgets + Gifts for first 1000 rankers</p>
+                <p>B) 30 days regular participants: Month end gifts and felicitation at near by College.</p>
+                <p>C) 365 days participants: Top 100 nos. 1 lakh Study Scholarship with Privilege Merit Cards</p>
+                <p className="text-center mt-1">Every month end an open debate will be conducted in your near by Jr.college for Event & Prizes** Relay in TV & social Media</p>
+            </div>
+            <div className="bg-sky-200 border-2 border-sky-400 p-2 rounded-lg flex flex-col items-center justify-center text-sm font-semibold text-sky-900">
+                <p>Today's: {format(new Date(), 'dd:MM:yy')}</p>
+                <p>Quiz Login</p>
+                <p>Result</p>
+                <div className="flex gap-2 mt-1">
+                    <Star className="w-5 h-5 text-yellow-500" />
+                    <Star className="w-5 h-5 text-yellow-500" />
+                    <Star className="w-5 h-5 text-yellow-500" />
+                </div>
+            </div>
+        </header>
+    );
+}
+
+function CategoryGrid() {
+    return (
+        <div className="grid grid-cols-3 gap-2">
+            {categories.map((cat, index) => (
+                <Button key={index} className={`${cat.color} text-black font-bold text-xs h-16 flex flex-col items-center justify-between shadow-md border-b-4 border-gray-500/50`}>
+                    <div className="self-end border-t-[8px] border-b-[8px] border-r-[10px] border-transparent border-t-gray-600"></div>
+                    <span className="text-center">{cat.name}</span>
+                </Button>
+            ))}
+        </div>
+    );
+}
+
+function LiveStream() {
+    const liveYoutubeId = "jfKfPfyJRdk";
+    return (
+        <div className="mt-4 flex flex-col items-center">
+            <div className="w-full max-w-lg bg-gray-700 p-2 rounded-t-lg border-b-8 border-gray-500">
+                <div className="bg-black aspect-video rounded-md relative flex items-center justify-center">
+                    {/* Placeholder for the live stream content */}
+                     <iframe 
                         className="w-full h-full rounded-md"
                         src={`https://www.youtube.com/embed/${liveYoutubeId}`}
                         title="YouTube video player" 
@@ -114,103 +130,46 @@ function LiveStreamCard() {
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowFullScreen>
                     </iframe>
-                </div>
-            </CardContent>
-        </Card>
-    );
-}
-
-function SuggestionsList({className}: {className?: string}) {
-    const t = useTranslations('Dashboard');
-    return (
-         <Card className={className}>
-              <CardHeader>
-                <CardTitle>{t('valuable_suggestions')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-48">
-                    <div className="space-y-4">
-                        {suggestions.map(sug => (
-                            <p key={sug.id} className="text-sm border-b pb-2">{sug.text}</p>
-                        ))}
+                    <div className="absolute top-2 right-2 bg-yellow-400 text-black px-2 py-1 text-xs font-bold rounded">Edu Quiz</div>
+                    <div className="absolute bottom-4 text-center text-white">
+                        <p className="text-sm">A theme for our</p>
+                        <p className="font-bold">National Integrity and Moralism</p>
                     </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
-    )
-}
-
-function RightSidebar() {
-    const t = useTranslations('Dashboard');
-    return (
-        <aside className="hidden xl:block w-80 bg-card border-l p-4 sticky top-0 h-screen">
-            <div className="h-full flex flex-col">
-                <CardHeader className="px-2 pt-2">
-                    <CardTitle>{t('valuable_suggestions')}</CardTitle>
-                </CardHeader>
-                <ScrollArea className="flex-1">
-                    <CardContent className="px-2">
-                        <div className="space-y-4">
-                            {suggestions.map(sug => (
-                                <p key={sug.id} className="text-sm border-b pb-2">{sug.text}</p>
-                            ))}
-                        </div>
-                    </CardContent>
-                </ScrollArea>
-            </div>
-        </aside>
-    );
-}
-
-function SearchRibbon() {
-    return (
-        <footer className="sticky bottom-0 bg-card border-t p-2">
-            <ScrollArea className="w-full whitespace-nowrap">
-                <div className="flex gap-2 pb-2">
-                    {searchChips.map((chip, i) => (
-                        <Button key={i} variant="outline" size="sm" className="rounded-full">
-                            {chip}
-                        </Button>
-                    ))}
                 </div>
-                <ScrollBar orientation="horizontal" />
-            </ScrollArea>
-        </footer>
+            </div>
+            <div className="bg-gray-400 w-32 h-4"></div>
+            <div className="bg-gray-500 w-48 h-6 rounded-b-md"></div>
+            <h3 className="text-red-600 font-bold text-lg tracking-widest mt-1">LIVE STREAMING</h3>
+        </div>
     );
 }
 
+function MainContent() {
+    return (
+        <main className="flex-1 p-2 flex flex-col">
+            <div className="bg-primary text-primary-foreground p-1 rounded-md text-center text-xs font-bold flex justify-around mb-2">
+                {topNavLinks.map(link => <a href="#" key={link} className="hover:underline">{link}</a>)}
+            </div>
+
+            <HeaderInfo />
+
+            <p className="text-center font-semibold text-primary mb-2">Faculty Login form to enter the Quiz Bits & key:</p>
+            
+            <CategoryGrid />
+            <LiveStream />
+        </main>
+    );
+}
 
 export default function DashboardPage() {
-  const t = useTranslations('Dashboard');
-
-  return (
-    <div className="flex min-h-screen bg-background">
-      <LeftSidebar />
-
-      <div className="flex-1 flex flex-col min-w-0">
-        <main className="flex-1 p-4 md:p-6 overflow-y-auto">
-          <div className="flex items-center gap-4 mb-6">
-            <DateChip />
-            <h1 className="text-3xl font-bold">{t('title')}</h1>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4">
-                {categories.map(cat => (
-                    <CategoryTile key={cat.id} category={cat} />
-                ))}
+    return (
+        <div className="flex min-h-screen bg-background">
+            <LeftNav />
+            <div className="flex-1 flex flex-col">
+                <MainContent />
+                <footer className="w-full h-4 bg-gray-400 border-t-2 border-gray-500"></footer>
             </div>
-            <div className="lg:col-span-1 row-start-1 lg:row-start-auto">
-                <LiveStreamCard />
-            </div>
-          </div>
-          <SuggestionsList className="mt-6 xl:hidden" />
-        </main>
-
-        <SearchRibbon />
-      </div>
-
-      <RightSidebar />
-    </div>
-  );
+            <RightNav />
+        </div>
+    );
 }
