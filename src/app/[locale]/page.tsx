@@ -1,6 +1,8 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -80,8 +82,15 @@ function RightNav() {
 }
 
 function HeaderInfo() {
+    const [time, setTime] = useState(new Date());
+
+    useEffect(() => {
+        const timerId = setInterval(() => setTime(new Date()), 1000);
+        return () => clearInterval(timerId);
+    }, []);
+
     return (
-        <header className="col-span-2 grid grid-cols-2 gap-4 mb-2">
+        <header className="grid grid-cols-2 gap-4">
             <div className="bg-yellow-200 border-2 border-yellow-400 p-2 rounded-lg text-xs text-yellow-900">
                 <p>A). Daily Participants: 40% to 50% Gift Vouchers on Gadgets + Gifts for first 1000 rankers</p>
                 <p>B) 30 days regular participants: Month end gifts and felicitation at near by College.</p>
@@ -89,13 +98,15 @@ function HeaderInfo() {
                 <p className="text-center mt-1">Every month end an open debate will be conducted in your near by Jr.college for Event & Prizes** Relay in TV & social Media</p>
             </div>
             <div className="bg-sky-200 border-2 border-sky-400 p-2 rounded-lg flex flex-col items-center justify-center text-sm font-semibold text-sky-900">
-                <p>Today's: {format(new Date(), 'dd:MM:yy')}</p>
-                <p>Quiz Login</p>
+                <p>Today's: {format(time, 'HH:mm:ss')}</p>
+                <Link href="/quiz/today" className="bg-gray-600/75 text-white px-6 py-1 my-1 rounded-md shadow-md hover:bg-gray-700/75">
+                    Quiz Login
+                </Link>
                 <p>Result</p>
                 <div className="flex gap-2 mt-1">
-                    <Star className="w-5 h-5 text-yellow-500" />
-                    <Star className="w-5 h-5 text-yellow-500" />
-                    <Star className="w-5 h-5 text-yellow-500" />
+                    <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+                    <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+                    <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
                 </div>
             </div>
         </header>
@@ -147,12 +158,12 @@ function LiveStream() {
 function MainContent() {
     return (
         <main className="flex-1 p-2 flex flex-col">
-            <div className="bg-primary text-primary-foreground p-1 rounded-md text-center text-xs font-bold flex justify-around mb-2">
-                {topNavLinks.map(link => <a href="#" key={link} className="hover:underline">{link}</a>)}
-            </div>
-
             <HeaderInfo />
 
+            <div className="bg-primary text-primary-foreground p-1 rounded-md text-center text-xs font-bold flex justify-around my-2">
+                {topNavLinks.map(link => <a href="#" key={link} className="hover:underline">{link}</a>)}
+            </div>
+            
             <p className="text-center font-semibold text-primary mb-2">Faculty Login form to enter the Quiz Bits & key:</p>
             
             <CategoryGrid />
