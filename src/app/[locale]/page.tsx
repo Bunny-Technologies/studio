@@ -99,7 +99,7 @@ function HeaderInfo() {
             </div>
             <div className="bg-sky-200 border-2 border-sky-400 p-2 rounded-lg flex flex-col items-center justify-center text-sm font-semibold text-sky-900">
                 <p>Today's: {format(time, 'HH:mm:ss')}</p>
-                <Link href="/quiz/today" className="bg-gray-600/75 text-white px-6 py-1 my-1 rounded-md shadow-md hover:bg-gray-700/75">
+                <Link href="/login" className="bg-gray-600/75 text-white px-6 py-1 my-1 rounded-md shadow-md hover:bg-gray-700/75">
                     Quiz Login
                 </Link>
                 <p>Result</p>
