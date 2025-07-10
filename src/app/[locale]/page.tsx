@@ -158,17 +158,26 @@ function LiveStream() {
 
 function MainContent() {
     return (
-        <main className="flex-1 p-2 flex flex-col">
-            <HeaderInfo />
+        <main className="flex-1 p-2 flex flex-col justify-between">
+            <div>
+                <HeaderInfo />
 
-            <div className="bg-primary text-primary-foreground p-1 rounded-md text-center text-xs font-bold flex justify-around my-2">
-                {topNavLinks.map(link => <a href="#" key={link} className="hover:underline">{link}</a>)}
+                <div className="bg-primary text-primary-foreground p-1 rounded-md text-center text-xs font-bold flex justify-around my-2">
+                    {topNavLinks.map(link => <a href="#" key={link} className="hover:underline">{link}</a>)}
+                </div>
+                
+                <p className="text-center font-semibold text-primary mb-2">
+                    <Link href="/faculty" className="hover:underline">
+                        Faculty Login form to enter the Quiz Bits & key:
+                    </Link>
+                </p>
+                
+                <CategoryGrid />
             </div>
-            
-            <p className="text-center font-semibold text-primary mb-2">Faculty Login form to enter the Quiz Bits & key:</p>
-            
-            <CategoryGrid />
-            <LiveStream />
+
+            <div className="flex-grow flex items-center justify-center">
+                 <LiveStream />
+            </div>
         </main>
     );
 }
