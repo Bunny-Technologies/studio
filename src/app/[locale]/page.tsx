@@ -130,7 +130,7 @@ function CategoryGrid() {
 function LiveStream() {
     const liveYoutubeId = "jfKfPfyJRdk";
     return (
-        <div className="mt-4 flex flex-col items-center">
+        <div className="flex flex-col items-center justify-center">
             <div className="w-full max-w-lg bg-gray-700 p-2 rounded-t-lg border-b-8 border-gray-500">
                 <div className="bg-black aspect-video rounded-md relative flex items-center justify-center">
                     {/* Placeholder for the live stream content */}
@@ -158,7 +158,7 @@ function LiveStream() {
 
 function MainContent() {
     return (
-        <main className="flex-1 p-2 flex flex-col justify-between">
+        <main className="flex-1 p-2 flex flex-col">
             <div>
                 <HeaderInfo />
 
@@ -171,12 +171,11 @@ function MainContent() {
                         Faculty Login form to enter the Quiz Bits & key:
                     </Link>
                 </p>
-                
-                <CategoryGrid />
             </div>
 
-            <div className="flex-grow flex items-center justify-center">
-                 <LiveStream />
+            <div className="flex-grow grid md:grid-cols-2 gap-4 items-center">
+                <CategoryGrid />
+                <LiveStream />
             </div>
         </main>
     );
