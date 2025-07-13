@@ -174,8 +174,8 @@ function MainContent() {
             </div>
 
             <div className="flex-grow grid md:grid-cols-2 gap-4 items-center">
-                <CategoryGrid />
                 <LiveStream />
+                <CategoryGrid />
             </div>
         </main>
     );
