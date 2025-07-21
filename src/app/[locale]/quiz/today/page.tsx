@@ -1,20 +1,15 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Terminal } from 'lucide-react';
+
 import type { Question } from '@/lib/types';
-
-// Mock Data based on the image
-const dailyQuestions: Question[] = Array.from({ length: 25 }, (_, i) => ({
-    id: `q${i + 1}`,
-    text: `Question ${i + 1}: This is a sample question text...`,
-    options: ['Option A', 'Option B', 'Option C'],
-    correctIndex: 0,
-    category: 'GK',
-    difficulty: 'easy',
-}));
-
+import { generateQuiz } from '@/ai/flows/generate-quiz-flow';
 
 function DottedLineInput({ label, className }: { label: string, className?: string }) {
     return (
@@ -74,7 +69,7 @@ function QuestionRow({ question, index }: { question: Question; index: number })
                 <div key={i} className="flex items-center space-x-2">
                   <RadioGroupItem value={`${i}`} id={`q${index}-o${i}`} />
                   <Label htmlFor={`q${index}-o${i}`} className="font-normal">{`${String.fromCharCode(97 + i)})`}</Label>
-                   <div className="w-28 border-b border-dotted border-gray-500"></div>
+                   <div className="w-28 border-b border-dotted border-gray-500">{option}</div>
                 </div>
               ))}
             </RadioGroup>
@@ -86,6 +81,27 @@ function QuestionRow({ question, index }: { question: Question; index: number })
         </div>
     </div>
   );
+}
+
+function QuizLoadingSkeleton() {
+    return (
+        <div className="space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex items-start gap-x-4 py-2">
+                    <Skeleton className="h-6 w-10" />
+                    <div className="w-full space-y-3">
+                        <Skeleton className="h-5 w-4/5" />
+                        <div className="flex gap-6">
+                            <Skeleton className="h-5 w-28" />
+                            <Skeleton className="h-5 w-28" />
+                            <Skeleton className="h-5 w-28" />
+                        </div>
+                    </div>
+                </div>
+            ))}
+             <p className="text-center text-primary font-semibold">Generating your quiz questions...</p>
+        </div>
+    );
 }
 
 function ResultHeader() {
@@ -133,6 +149,30 @@ function PrivilegesBanner() {
 
 export default function DailyQuizPage() {
   const t = useTranslations('Quiz');
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchQuestions() {
+      try {
+        setLoading(true);
+        setError(null);
+        const quizQuestions = await generateQuiz({
+          category: 'General Knowledge for students in India',
+          count: 25,
+          language: 'English'
+        });
+        setQuestions(quizQuestions);
+      } catch (err) {
+        console.error(err);
+        setError('Failed to generate quiz questions. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchQuestions();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 p-2 sm:p-4 md:p-8">
@@ -141,13 +181,26 @@ export default function DailyQuizPage() {
         
         <ResultHeader />
         
-        <div className="space-y-1">
-            {dailyQuestions.map((q, i) => (
-              <QuestionRow key={q.id} question={q} index={i} />
-            ))}
-        </div>
+        {loading && <QuizLoadingSkeleton />}
         
-        <SubmitSection />
+        {error && (
+            <Alert variant="destructive">
+                <Terminal className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+            </Alert>
+        )}
+
+        {!loading && !error && (
+            <>
+                <div className="space-y-1">
+                    {questions.map((q, i) => (
+                      <QuestionRow key={q.id || i} question={q} index={i} />
+                    ))}
+                </div>
+                <SubmitSection />
+            </>
+        )}
 
         <PrivilegesBanner />
       </div>
