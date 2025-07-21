@@ -7,12 +7,22 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal, CheckCircle2, XCircle } from 'lucide-react';
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
-import type { Question } from '@/lib/types';
+import type { Question, UserProfile } from '@/lib/types';
 import { generateQuiz } from '@/ai/flows/generate-quiz-flow';
 import { cn } from '@/lib/utils';
+import { app } from '@/lib/firebase';
+import { useToast } from '@/hooks/use-toast';
 
-function StudentHeader() {
+function StudentHeader({ profile, score }: { profile: Partial<UserProfile> | null, score: number | null }) {
+    const [today, setToday] = useState('');
+
+    useEffect(() => {
+        setToday(new Date().toLocaleDateString('en-GB'));
+    }, []);
+
     return (
         <div className="border-2 border-blue-400 rounded-lg p-3 mb-4">
             <div className="flex justify-between items-center mb-2">
@@ -21,29 +31,29 @@ function StudentHeader() {
                     <label className="font-bold">Daily Quiz :</label>
                     <div className="border-2 rounded-md w-24 h-6 bg-gray-100"></div>
                      <label className="font-bold">Date :</label>
-                    <div className="border-2 rounded-md w-24 h-6 bg-gray-100"></div>
+                    <div className="border-2 rounded-md w-24 h-6 bg-gray-100 flex items-center justify-center text-sm">{today}</div>
                 </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
                 <div className="grid grid-cols-[auto_1fr] items-end gap-2">
-                    <label>Name</label><div className="border-b border-dotted border-gray-600 h-5"></div>
+                    <label>Name</label><div className="border-b border-dotted border-gray-600 h-5">{profile?.name || '...'}</div>
                 </div>
                  <div className="grid grid-cols-[auto_1fr] items-end gap-2">
                     <label>Age</label><div className="border-b border-dotted border-gray-600 h-5"></div>
                 </div>
                  <div className="grid grid-cols-[auto_1fr] items-end gap-2">
-                    <label>School</label><div className="border-b border-dotted border-gray-600 h-5"></div>
+                    <label>School</label><div className="border-b border-dotted border-gray-600 h-5">{profile?.school || '...'}</div>
                 </div>
                  <div className="grid grid-cols-[auto_1fr] items-end gap-2">
                     <label>Class</label><div className="border-b border-dotted border-gray-600 h-5"></div>
                 </div>
                 <div className="grid grid-cols-[auto_1fr_auto_1fr] items-end gap-2">
-                    <label>ID No.</label><div className="border-b border-dotted border-gray-600 h-5"></div>
+                    <label>ID No.</label><div className="border-b border-dotted border-gray-600 h-5">{profile?.idNo || '...'}</div>
                     <label>Ph.No.</label><div className="border-b border-dotted border-gray-600 h-5"></div>
                 </div>
                  <div className="grid grid-cols-[auto_1fr_auto_1fr] items-end gap-2">
                     <label>Area</label><div className="border-b border-dotted border-gray-600 h-5"></div>
-                    <label>Points obtained</label><div className="border-b border-dotted border-gray-600 h-5"></div>
+                    <label>Points obtained</label><div className="border-b border-dotted border-gray-600 h-5">{score !== null ? score : '...'}</div>
                 </div>
             </div>
         </div>
@@ -77,14 +87,13 @@ function QuestionRow({
                 value={selectedAnswer !== null ? String(selectedAnswer) : undefined}
             >
               {question.options.map((option, i) => {
-                const isSelected = i === selectedAnswer;
                 const isCorrectOption = i === question.correctIndex;
                 return (
                     <div key={i} className="flex items-center space-x-2">
                       <RadioGroupItem value={`${i}`} id={`q${index}-o${i}`} />
                       <Label htmlFor={`q${index}-o${i}`} className={cn(
                           "font-normal",
-                          isSubmitted && isSelected && !isCorrect && "text-red-600",
+                          isSubmitted && selectedAnswer === i && !isCorrect && "text-red-600",
                           isSubmitted && isCorrectOption && "text-green-600"
                       )}>
                         {`${String.fromCharCode(97 + i)})`}
@@ -138,7 +147,7 @@ function QuizLoadingSkeleton() {
                     </div>
                 </div>
             ))}
-             <p className="text-center text-primary font-semibold">Generating your quiz questions...</p>
+             <p className="text-center text-primary font-semibold">Preparing your daily quiz...</p>
         </div>
     );
 }
@@ -159,27 +168,28 @@ function ResultHeader() {
 function SubmitSection({ 
     onSubmit, 
     isSubmitted, 
-    score 
+    score,
+    isSubmitting
 }: { 
     onSubmit: () => void;
     isSubmitted: boolean;
     score: number | null;
+    isSubmitting: boolean;
 }) {
     return (
         <div className="flex flex-col items-center mt-4 text-sm">
              <div className="flex items-center gap-4">
-                <Button onClick={onSubmit} disabled={isSubmitted}>
-                  {isSubmitted ? 'Submitted' : 'Submit : >>>>>>'}
+                <Button onClick={onSubmit} disabled={isSubmitted || isSubmitting}>
+                  {isSubmitting ? 'Submitting...' : (isSubmitted ? 'Submitted' : 'Submit : >>>>>>')}
                 </Button>
                 <div className="text-right font-semibold">
-                    <p>Result : {isSubmitted ? `${score} / 100` : '................'}</p>
+                    <p>Result : {score !== null ? `${score} / 100` : '................'}</p>
                 </div>
             </div>
             <p className="mt-2 font-semibold">Quiz contents: A). Health Topics B). Science & Technology C).Sports & Games D).G.K & Current Affairs E).History</p>
         </div>
     )
 }
-
 
 function PrivilegesBanner() {
     const t = useTranslations('Quiz');
@@ -202,29 +212,59 @@ export default function DailyQuizPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [score, setScore] = useState<number | null>(null);
+  const [userProfile, setUserProfile] = useState<Partial<UserProfile> | null>(null);
+
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const { toast } = useToast();
 
   useEffect(() => {
-    async function fetchQuestions() {
+    // Fetch user profile from localStorage
+    const storedProfile = localStorage.getItem('userProfile');
+    if (storedProfile) {
+      setUserProfile(JSON.parse(storedProfile));
+    }
+
+    async function fetchOrGenerateQuiz() {
       try {
         setLoading(true);
         setError(null);
-        const quizQuestions = await generateQuiz({
-          category: 'General Knowledge for students in India',
-          count: 25,
-          language: 'English'
-        });
+        
+        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        const quizDocRef = doc(db, 'dailyQuizzes', today);
+        const quizDoc = await getDoc(quizDocRef);
+
+        let quizQuestions: Question[];
+
+        if (quizDoc.exists()) {
+          // Quiz for today already exists, fetch it
+          quizQuestions = quizDoc.data().questions;
+        } else {
+          // No quiz for today, generate and save it
+          quizQuestions = await generateQuiz({
+            category: 'General Knowledge for students in India',
+            count: 25,
+            language: 'English'
+          });
+          await setDoc(quizDocRef, {
+            questions: quizQuestions,
+            createdAt: serverTimestamp(),
+          });
+        }
+
         setQuestions(quizQuestions);
         setSelectedAnswers(Array(quizQuestions.length).fill(null));
       } catch (err) {
         console.error(err);
-        setError('Failed to generate quiz questions. Please try again later.');
+        setError('Failed to load the daily quiz. Please try again later.');
       } finally {
         setLoading(false);
       }
     }
-    fetchQuestions();
-  }, []);
+    fetchOrGenerateQuiz();
+  }, [db]);
 
   const handleAnswerChange = (questionIndex: number, answerIndex: number) => {
     if (isSubmitted) return;
@@ -233,7 +273,8 @@ export default function DailyQuizPage() {
     setSelectedAnswers(newAnswers);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
     let calculatedScore = 0;
     questions.forEach((question, index) => {
       if (selectedAnswers[index] === question.correctIndex) {
@@ -241,13 +282,49 @@ export default function DailyQuizPage() {
       }
     });
     setScore(calculatedScore);
-    setIsSubmitted(true);
+
+    const user = auth.currentUser;
+    if (!user) {
+        setError("You are not logged in. Cannot save score.");
+        setIsSubmitting(false);
+        return;
+    }
+
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        const submissionDocRef = doc(collection(db, 'quizSubmissions'));
+        
+        await setDoc(submissionDocRef, {
+            userId: user.uid,
+            quizDate: today,
+            answers: selectedAnswers,
+            score: calculatedScore,
+            submittedAt: serverTimestamp()
+        });
+        
+        setIsSubmitted(true);
+        toast({
+            title: "Quiz Submitted!",
+            description: `Your score is ${calculatedScore}.`,
+        });
+
+    } catch(err) {
+        console.error("Failed to save score:", err);
+        setError("There was an error submitting your score. Please try again.");
+        toast({
+            title: "Submission Failed",
+            description: "Could not save your score. Please check your connection and try again.",
+            variant: "destructive",
+        });
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-2 sm:p-4 md:p-8">
       <div className="max-w-5xl mx-auto bg-white p-4 sm:p-6 rounded-lg shadow-lg">
-        <StudentHeader />
+        <StudentHeader profile={userProfile} score={score} />
         
         <ResultHeader />
         
@@ -278,6 +355,7 @@ export default function DailyQuizPage() {
                 <SubmitSection 
                   onSubmit={handleSubmit}
                   isSubmitted={isSubmitted}
+                  isSubmitting={isSubmitting}
                   score={score}
                 />
             </>
@@ -288,5 +366,3 @@ export default function DailyQuizPage() {
     </div>
   );
 }
-
-    

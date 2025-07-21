@@ -4,6 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import { getAuth, signInAnonymously } from 'firebase/auth';
+import { getFirestore, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -22,6 +24,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { app } from '@/lib/firebase';
+import { useToast } from '@/hooks/use-toast';
 
 const loginSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -32,6 +36,9 @@ const loginSchema = z.object({
 export default function LoginPage() {
   const t = useTranslations('Login');
   const router = useRouter();
+  const { toast } = useToast();
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -42,10 +49,33 @@ export default function LoginPage() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    // In a real app, you would call a Firebase function to create/update the user profile.
-    console.log(values);
-    router.push('/quiz/today');
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    try {
+      const userCredential = await signInAnonymously(auth);
+      const user = userCredential.user;
+
+      if (user) {
+        await setDoc(doc(db, 'users', user.uid), {
+          name: values.name,
+          school: values.school,
+          idNo: values.idNo,
+          createdAt: serverTimestamp(),
+          pointsTotal: 0,
+        });
+        
+        // Store user info locally to use on the quiz page
+        localStorage.setItem('userProfile', JSON.stringify({ uid: user.uid, ...values }));
+
+        router.push('/quiz/today');
+      }
+    } catch (error) {
+      console.error('Authentication or Firestore error:', error);
+      toast({
+        title: 'Login Failed',
+        description: 'Could not sign you in. Please try again.',
+        variant: 'destructive',
+      });
+    }
   }
 
   return (
@@ -97,7 +127,9 @@ export default function LoginPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">{t('submit')}</Button>
+              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? 'Logging in...' : t('submit')}
+              </Button>
             </form>
           </Form>
         </CardContent>
