@@ -15,7 +15,8 @@ const QuestionSchema = z.object({
   id: z.string().describe('A unique identifier for the question.'),
   text: z.string().describe('The question text.'),
   options: z
-    .tuple([z.string(), z.string(), z.string()])
+    .array(z.string())
+    .length(3)
     .describe('An array of three possible answers.'),
   correctIndex: z
     .number()
