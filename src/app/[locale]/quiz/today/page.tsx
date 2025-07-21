@@ -6,19 +6,11 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Terminal } from 'lucide-react';
+import { Terminal, CheckCircle2, XCircle } from 'lucide-react';
 
 import type { Question } from '@/lib/types';
 import { generateQuiz } from '@/ai/flows/generate-quiz-flow';
-
-function DottedLineInput({ label, className }: { label: string, className?: string }) {
-    return (
-        <div className={`flex items-end gap-2 ${className}`}>
-            <label className="text-sm font-medium whitespace-nowrap">{label}:</label>
-            <div className="w-full border-b border-dotted border-gray-600 h-5"></div>
-        </div>
-    )
-}
+import { cn } from '@/lib/utils';
 
 function StudentHeader() {
     return (
@@ -58,26 +50,73 @@ function StudentHeader() {
     )
 }
 
-function QuestionRow({ question, index }: { question: Question; index: number }) {
+function QuestionRow({ 
+    question, 
+    index, 
+    onAnswerChange, 
+    selectedAnswer,
+    isSubmitted 
+}: { 
+    question: Question; 
+    index: number;
+    onAnswerChange: (questionIndex: number, answerIndex: number) => void;
+    selectedAnswer: number | null;
+    isSubmitted: boolean;
+}) {
+  const isCorrect = selectedAnswer === question.correctIndex;
+
   return (
     <div className="grid grid-cols-[auto_1fr_auto] items-start gap-x-4 py-2 border-b border-gray-200">
         <div className="font-semibold pt-1">{`Q.${index + 1})`}</div>
         <div>
             <p className="font-medium mb-2">{question.text}</p>
-            <RadioGroup className="flex flex-col sm:flex-row gap-x-6 gap-y-1">
-              {question.options.map((option, i) => (
-                <div key={i} className="flex items-center space-x-2">
-                  <RadioGroupItem value={`${i}`} id={`q${index}-o${i}`} />
-                  <Label htmlFor={`q${index}-o${i}`} className="font-normal">{`${String.fromCharCode(97 + i)})`}</Label>
-                   <div className="w-28 border-b border-dotted border-gray-500">{option}</div>
-                </div>
-              ))}
+            <RadioGroup 
+                className="flex flex-col sm:flex-row gap-x-6 gap-y-1"
+                onValueChange={(value) => onAnswerChange(index, parseInt(value))}
+                disabled={isSubmitted}
+                value={selectedAnswer !== null ? String(selectedAnswer) : undefined}
+            >
+              {question.options.map((option, i) => {
+                const isSelected = i === selectedAnswer;
+                const isCorrectOption = i === question.correctIndex;
+                return (
+                    <div key={i} className="flex items-center space-x-2">
+                      <RadioGroupItem value={`${i}`} id={`q${index}-o${i}`} />
+                      <Label htmlFor={`q${index}-o${i}`} className={cn(
+                          "font-normal",
+                          isSubmitted && isSelected && !isCorrect && "text-red-600",
+                          isSubmitted && isCorrectOption && "text-green-600"
+                      )}>
+                        {`${String.fromCharCode(97 + i)})`}
+                      </Label>
+                       <div className="w-28 border-b border-dotted border-gray-500">{option}</div>
+                    </div>
+                );
+              })}
             </RadioGroup>
         </div>
          <div className="flex gap-2 text-sm text-center pt-1">
-            <span className="w-20">(.........)</span>
-            <span className="w-20">(.........)</span>
-            <span className="w-20">(.........)</span>
+            {isSubmitted && selectedAnswer !== null ? (
+              isCorrect ? (
+                <>
+                  <CheckCircle2 className="w-5 h-5 text-green-600" />
+                  <span className="w-20 text-green-600 font-bold">Right</span>
+                  <span className="w-20 font-bold">4</span>
+                </>
+              ) : (
+                <>
+                  <XCircle className="w-5 h-5 text-red-600" />
+                  <span className="w-20 text-red-600 font-bold">Wrong</span>
+                  <span className="w-20 font-bold">0</span>
+                </>
+              )
+            ) : (
+              <>
+                <span className="w-20">(.........)</span>
+                <span className="w-20">(.........)</span>
+                <span className="w-20">(.........)</span>
+              </>
+            )}
         </div>
     </div>
   );
@@ -110,20 +149,30 @@ function ResultHeader() {
             <div></div>
             <div className="flex gap-2 text-sm font-bold text-center">
                 <span className="w-20">Result</span>
-                <span className="w-20">Right</span>
+                <span className="w-20">Right/Wrong</span>
                 <span className="w-20">Score/points</span>
             </div>
         </div>
     )
 }
 
-function SubmitSection() {
+function SubmitSection({ 
+    onSubmit, 
+    isSubmitted, 
+    score 
+}: { 
+    onSubmit: () => void;
+    isSubmitted: boolean;
+    score: number | null;
+}) {
     return (
         <div className="flex flex-col items-center mt-4 text-sm">
              <div className="flex items-center gap-4">
-                <Button>Submit : >>>>>> </Button>
-                <div className="text-right">
-                    <p>Result : ................</p>
+                <Button onClick={onSubmit} disabled={isSubmitted}>
+                  {isSubmitted ? 'Submitted' : 'Submit : >>>>>>'}
+                </Button>
+                <div className="text-right font-semibold">
+                    <p>Result : {isSubmitted ? `${score} / 100` : '................'}</p>
                 </div>
             </div>
             <p className="mt-2 font-semibold">Quiz contents: A). Health Topics B). Science & Technology C).Sports & Games D).G.K & Current Affairs E).History</p>
@@ -148,10 +197,12 @@ function PrivilegesBanner() {
 }
 
 export default function DailyQuizPage() {
-  const t = useTranslations('Quiz');
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [selectedAnswers, setSelectedAnswers] = useState<(number | null)[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [score, setScore] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchQuestions() {
@@ -164,6 +215,7 @@ export default function DailyQuizPage() {
           language: 'English'
         });
         setQuestions(quizQuestions);
+        setSelectedAnswers(Array(quizQuestions.length).fill(null));
       } catch (err) {
         console.error(err);
         setError('Failed to generate quiz questions. Please try again later.');
@@ -173,6 +225,24 @@ export default function DailyQuizPage() {
     }
     fetchQuestions();
   }, []);
+
+  const handleAnswerChange = (questionIndex: number, answerIndex: number) => {
+    if (isSubmitted) return;
+    const newAnswers = [...selectedAnswers];
+    newAnswers[questionIndex] = answerIndex;
+    setSelectedAnswers(newAnswers);
+  };
+
+  const handleSubmit = () => {
+    let calculatedScore = 0;
+    questions.forEach((question, index) => {
+      if (selectedAnswers[index] === question.correctIndex) {
+        calculatedScore += 4; // 4 points per correct answer
+      }
+    });
+    setScore(calculatedScore);
+    setIsSubmitted(true);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-2 sm:p-4 md:p-8">
@@ -195,10 +265,21 @@ export default function DailyQuizPage() {
             <>
                 <div className="space-y-1">
                     {questions.map((q, i) => (
-                      <QuestionRow key={q.id || i} question={q} index={i} />
+                      <QuestionRow 
+                        key={q.id || i} 
+                        question={q} 
+                        index={i}
+                        onAnswerChange={handleAnswerChange}
+                        selectedAnswer={selectedAnswers[i]}
+                        isSubmitted={isSubmitted}
+                      />
                     ))}
                 </div>
-                <SubmitSection />
+                <SubmitSection 
+                  onSubmit={handleSubmit}
+                  isSubmitted={isSubmitted}
+                  score={score}
+                />
             </>
         )}
 
@@ -207,3 +288,5 @@ export default function DailyQuizPage() {
     </div>
   );
 }
+
+    
