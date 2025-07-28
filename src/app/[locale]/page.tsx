@@ -85,7 +85,6 @@ function HeaderInfo() {
     const [time, setTime] = useState<Date | null>(null);
 
     useEffect(() => {
-        setTime(new Date());
         const timerId = setInterval(() => setTime(new Date()), 1000);
         return () => clearInterval(timerId);
     }, []);
