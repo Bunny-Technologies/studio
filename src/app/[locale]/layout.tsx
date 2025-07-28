@@ -7,7 +7,7 @@ import '../globals.css';
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata = {
-  title: 'Jagruthi Quiz Platform',
+  title: 'EDU QUIZ WORLD',
   description: 'An educational platform for students of Telangana.',
 };
 
