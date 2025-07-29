@@ -38,6 +38,7 @@
     "description": "Please enter your details to participate.",
     "name": "Name",
     "school": "School",
+    "class": "Class",
     "idNo": "ID Number",
     "submit": "Submit"
   }

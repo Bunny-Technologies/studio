@@ -122,7 +122,7 @@ export default function LoginPage() {
                 name="class"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Class</FormLabel>
+                    <FormLabel>{t('class')}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
