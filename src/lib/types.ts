@@ -4,6 +4,7 @@ export interface UserProfile {
   uid: string;
   name: string;
   school: string;
+  class: string;
   idNo: string;
   pointsTotal: number;
 }

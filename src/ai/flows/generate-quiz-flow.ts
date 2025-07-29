@@ -31,6 +31,7 @@ const QuestionSchema = z.object({
 
 const GenerateQuizInputSchema = z.object({
   category: z.string().describe('The category for the quiz questions, e.g., "General Knowledge".'),
+  studentClass: z.string().describe('The class the student is in, e.g., "6th grade", "10th class".'),
   count: z.number().int().min(1).max(50).describe('The number of questions to generate.'),
   language: z.string().describe('The language for the quiz questions, e.g., "English", "Telugu".'),
 });
@@ -50,6 +51,7 @@ const prompt = ai.definePrompt({
   prompt: `You are an expert quiz creator for students in Telangana, India.
   
   Generate {{count}} quiz questions in the {{language}} language for the category: "{{category}}".
+  The questions should be appropriate for a student in {{studentClass}}.
   
   Each question must have exactly three options.
   The output must be a JSON array of questions matching the provided schema. Ensure the response is only the JSON array.

@@ -30,6 +30,7 @@ import { useToast } from '@/hooks/use-toast';
 const loginSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
   school: z.string().min(3, { message: 'School name is required.' }),
+  class: z.string().min(1, { message: 'Class is required.' }),
   idNo: z.string().min(1, { message: 'ID Number is required.' }),
 });
 
@@ -45,6 +46,7 @@ export default function LoginPage() {
     defaultValues: {
       name: '',
       school: '',
+      class: '',
       idNo: '',
     },
   });
@@ -58,6 +60,7 @@ export default function LoginPage() {
         await setDoc(doc(db, 'users', user.uid), {
           name: values.name,
           school: values.school,
+          class: values.class,
           idNo: values.idNo,
           createdAt: serverTimestamp(),
           pointsTotal: 0,
@@ -107,6 +110,19 @@ export default function LoginPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('school')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="class"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Class</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>

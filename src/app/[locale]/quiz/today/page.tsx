@@ -45,7 +45,7 @@ function StudentHeader({ profile, score }: { profile: Partial<UserProfile> | nul
                     <label>School</label><div className="border-b border-dotted border-gray-600 h-5">{profile?.school || '...'}</div>
                 </div>
                  <div className="grid grid-cols-[auto_1fr] items-end gap-2">
-                    <label>Class</label><div className="border-b border-dotted border-gray-600 h-5"></div>
+                    <label>Class</label><div className="border-b border-dotted border-gray-600 h-5">{profile?.class || '...'}</div>
                 </div>
                 <div className="grid grid-cols-[auto_1fr_auto_1fr] items-end gap-2">
                     <label>ID No.</label><div className="border-b border-dotted border-gray-600 h-5">{profile?.idNo || '...'}</div>
@@ -223,11 +223,18 @@ export default function DailyQuizPage() {
   useEffect(() => {
     // Fetch user profile from localStorage
     const storedProfile = localStorage.getItem('userProfile');
+    let profile: Partial<UserProfile> | null = null;
     if (storedProfile) {
-      setUserProfile(JSON.parse(storedProfile));
+      profile = JSON.parse(storedProfile);
+      setUserProfile(profile);
     }
 
     async function fetchOrGenerateQuiz() {
+      if (!profile || !profile.class) {
+        setError('Could not find student class. Please log in again.');
+        setLoading(false);
+        return;
+      }
       try {
         setLoading(true);
         setError(null);
@@ -245,6 +252,7 @@ export default function DailyQuizPage() {
           // No quiz for today, generate and save it
           quizQuestions = await generateQuiz({
             category: 'General Knowledge for students in India',
+            studentClass: profile.class,
             count: 25,
             language: 'English'
           });
