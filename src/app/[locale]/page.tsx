@@ -57,7 +57,7 @@ const topNavLinks = [
 // Components recreated from the image
 function LeftNav() {
     return (
-        <aside className="w-64 bg-primary text-primary-foreground p-2 flex flex-col gap-2">
+        <aside className="w-64 bg-primary text-primary-foreground p-2 flex-col gap-2 hidden md:flex">
             <div className="text-center py-2 border-b-2 border-blue-300">
                 <h2 className="text-xl font-bold">EDU QUIZ.WORLD</h2>
             </div>
@@ -81,7 +81,7 @@ function LeftNav() {
 
 function RightNav() {
     return (
-        <aside className="w-8 bg-primary text-primary-foreground flex items-center justify-center">
+        <aside className="w-8 bg-primary text-primary-foreground items-center justify-center hidden md:flex">
             <h2 className="writing-vertical-rl rotate-180 font-bold tracking-wider">
                 VALUABLE SUGGESTIONS
             </h2>
@@ -98,7 +98,7 @@ function HeaderInfo() {
     }, []);
 
     return (
-        <header className="grid grid-cols-2 gap-4">
+        <header className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-yellow-200 border-2 border-yellow-400 p-2 rounded-lg text-xs text-yellow-900">
                 <p>A). Daily Participants: 40% to 50% Gift Vouchers on Gadgets + Gifts for first 1000 rankers</p>
                 <p>B) 30 days regular participants: Month end gifts and felicitation at near by College.</p>
@@ -171,15 +171,15 @@ function MainContent() {
             <div>
                 <HeaderInfo />
 
-                <div className="bg-primary text-primary-foreground p-1 rounded-md text-center text-xs font-bold flex justify-around my-2">
+                <div className="bg-primary text-primary-foreground p-1 rounded-md text-center text-xs font-bold flex-wrap justify-around my-2 hidden md:flex">
                     {topNavLinks.map(link => (
-                        <Link href={link.href} key={link.href} className="hover:underline">
+                        <Link href={link.href} key={link.href} className="hover:underline px-2">
                             {link.label}
                         </Link>
                     ))}
                 </div>
                 
-                <p className="text-center font-semibold text-primary mb-2">
+                <p className="text-center font-semibold text-primary my-2 md:mb-2">
                     <Link href="/faculty" className="hover:underline">
                         Faculty Login form to enter the Quiz Bits & key:
                     </Link>
