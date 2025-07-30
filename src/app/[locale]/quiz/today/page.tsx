@@ -7,13 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal, CheckCircle2, XCircle } from 'lucide-react';
-import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
 
 import type { Question, UserProfile } from '@/lib/types';
 import { generateQuiz } from '@/ai/flows/generate-quiz-flow';
 import { cn } from '@/lib/utils';
-import { app } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 
 function StudentHeader({ profile, score }: { profile: Partial<UserProfile> | null, score: number | null }) {
@@ -215,9 +212,6 @@ export default function DailyQuizPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [score, setScore] = useState<number | null>(null);
   const [userProfile, setUserProfile] = useState<Partial<UserProfile> | null>(null);
-
-  const db = getFirestore(app);
-  const auth = getAuth(app);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -229,7 +223,7 @@ export default function DailyQuizPage() {
       setUserProfile(profile);
     }
 
-    async function fetchOrGenerateQuiz() {
+    async function generateNewQuiz() {
       if (!profile || !profile.class) {
         setError('Could not find student class. Please log in again.');
         setLoading(false);
@@ -239,28 +233,12 @@ export default function DailyQuizPage() {
         setLoading(true);
         setError(null);
         
-        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-        const quizDocRef = doc(db, 'dailyQuizzes', today);
-        const quizDoc = await getDoc(quizDocRef);
-
-        let quizQuestions: Question[];
-
-        if (quizDoc.exists()) {
-          // Quiz for today already exists, fetch it
-          quizQuestions = quizDoc.data().questions;
-        } else {
-          // No quiz for today, generate and save it
-          quizQuestions = await generateQuiz({
+        const quizQuestions = await generateQuiz({
             category: 'General Knowledge for students in India',
             studentClass: profile.class,
             count: 25,
             language: 'English'
-          });
-          await setDoc(quizDocRef, {
-            questions: quizQuestions,
-            createdAt: serverTimestamp(),
-          });
-        }
+        });
 
         setQuestions(quizQuestions);
         setSelectedAnswers(Array(quizQuestions.length).fill(null));
@@ -271,8 +249,8 @@ export default function DailyQuizPage() {
         setLoading(false);
       }
     }
-    fetchOrGenerateQuiz();
-  }, [db]);
+    generateNewQuiz();
+  }, []);
 
   const handleAnswerChange = (questionIndex: number, answerIndex: number) => {
     if (isSubmitted) return;
@@ -291,42 +269,15 @@ export default function DailyQuizPage() {
     });
     setScore(calculatedScore);
 
-    const user = auth.currentUser;
-    if (!user) {
-        setError("You are not logged in. Cannot save score.");
-        setIsSubmitting(false);
-        return;
-    }
-
-    try {
-        const today = new Date().toISOString().split('T')[0];
-        const submissionDocRef = doc(collection(db, 'quizSubmissions'));
-        
-        await setDoc(submissionDocRef, {
-            userId: user.uid,
-            quizDate: today,
-            answers: selectedAnswers,
-            score: calculatedScore,
-            submittedAt: serverTimestamp()
-        });
-        
-        setIsSubmitted(true);
-        toast({
-            title: "Quiz Submitted!",
-            description: `Your score is ${calculatedScore}.`,
-        });
-
-    } catch(err) {
-        console.error("Failed to save score:", err);
-        setError("There was an error submitting your score. Please try again.");
-        toast({
-            title: "Submission Failed",
-            description: "Could not save your score. Please check your connection and try again.",
-            variant: "destructive",
-        });
-    } finally {
-        setIsSubmitting(false);
-    }
+    // Since we are not using Firebase, we just show the score.
+    // In a real app, you would save this to your backend.
+    
+    setIsSubmitted(true);
+    toast({
+        title: "Quiz Submitted!",
+        description: `Your score is ${calculatedScore}.`,
+    });
+    setIsSubmitting(false);
   };
 
   return (

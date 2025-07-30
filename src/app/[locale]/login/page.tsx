@@ -4,8 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { getAuth, signInAnonymously } from 'firebase/auth';
-import { getFirestore, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -24,7 +22,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { app } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 
 const loginSchema = z.object({
@@ -38,8 +35,6 @@ export default function LoginPage() {
   const t = useTranslations('Login');
   const router = useRouter();
   const { toast } = useToast();
-  const auth = getAuth(app);
-  const db = getFirestore(app);
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -53,26 +48,22 @@ export default function LoginPage() {
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     try {
-      const userCredential = await signInAnonymously(auth);
-      const user = userCredential.user;
+      // Simulate a user login by creating a user object and storing it in localStorage.
+      const user = {
+        uid: `user_${new Date().getTime()}_${Math.random()}`,
+        ...values,
+      };
 
-      if (user) {
-        await setDoc(doc(db, 'users', user.uid), {
-          name: values.name,
-          school: values.school,
-          class: values.class,
-          idNo: values.idNo,
-          createdAt: serverTimestamp(),
-          pointsTotal: 0,
-        });
-        
-        // Store user info locally to use on the quiz page
-        localStorage.setItem('userProfile', JSON.stringify({ uid: user.uid, ...values }));
+      localStorage.setItem('userProfile', JSON.stringify(user));
+      
+      toast({
+        title: 'Login Successful',
+        description: 'You have been logged in.',
+      });
 
-        router.push('/quiz/today');
-      }
+      router.push('/quiz/today');
     } catch (error) {
-      console.error('Authentication or Firestore error:', error);
+      console.error('Login error:', error);
       toast({
         title: 'Login Failed',
         description: 'Could not sign you in. Please try again.',

@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc } from 'firebase/firestore';
 import {
   Card,
   CardContent,
@@ -20,9 +19,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 
-import { app } from '@/lib/firebase';
-import type { UserProfile } from '@/lib/types';
-
 interface LeaderboardEntry {
   rank: number;
   name: string;
@@ -30,11 +26,25 @@ interface LeaderboardEntry {
   userId: string;
 }
 
+// Mock data for the leaderboard
+const MOCK_LEADERBOARD_DATA: LeaderboardEntry[] = [
+    { rank: 1, name: 'Aarav Sharma', score: 98, userId: 'user1' },
+    { rank: 2, name: 'Vivaan Patel', score: 95, userId: 'user2' },
+    { rank: 3, name: 'Aditya Singh', score: 92, userId: 'user3' },
+    { rank: 4, name: 'Diya Gupta', score: 90, userId: 'user4' },
+    { rank: 5, name: 'Ishaan Kumar', score: 88, userId: 'user5' },
+    { rank: 6, name: 'Ananya Reddy', score: 85, userId: 'user6' },
+    { rank: 7, name: 'Rohan Mehta', score: 83, userId: 'user7' },
+    { rank: 8, name: 'Saanvi Joshi', score: 80, userId: 'user8' },
+    { rank: 9, name: 'Kabir Verma', score: 78, userId: 'user9' },
+    { rank: 10, name: 'Myra Khan', score: 75, userId: 'user10' },
+];
+
+
 export default function LeaderboardPage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const db = getFirestore(app);
 
   useEffect(() => {
     async function fetchLeaderboard() {
@@ -42,45 +52,11 @@ export default function LeaderboardPage() {
         setLoading(true);
         setError(null);
         
-        const today = new Date().toISOString().split('T')[0];
-        
-        // 1. Get top 100 submissions for today
-        const submissionsQuery = query(
-          collection(db, 'quizSubmissions'),
-          where('quizDate', '==', today),
-          orderBy('score', 'desc'),
-          limit(100)
-        );
-        
-        const submissionDocs = await getDocs(submissionsQuery);
-        
-        if (submissionDocs.empty) {
-          setLeaderboard([]);
-          return;
-        }
+        // Simulate a network delay
+        await new Promise(resolve => setTimeout(resolve, 500));
 
-        // 2. Get user profiles for the top submissions
-        const leaderboardDataPromises = submissionDocs.docs.map(async (submissionDoc, index) => {
-          const submissionData = submissionDoc.data();
-          const userDocRef = doc(db, 'users', submissionData.userId);
-          const userDoc = await getDoc(userDocRef);
-
-          let name = 'Unknown User';
-          if (userDoc.exists()) {
-            const userData = userDoc.data() as UserProfile;
-            name = userData.name;
-          }
-          
-          return {
-            rank: index + 1,
-            name: name,
-            score: submissionData.score,
-            userId: submissionData.userId,
-          };
-        });
-
-        const resolvedLeaderboardData = await Promise.all(leaderboardDataPromises);
-        setLeaderboard(resolvedLeaderboardData);
+        // Use mock data instead of fetching from Firebase
+        setLeaderboard(MOCK_LEADERBOARD_DATA);
 
       } catch (err) {
         console.error('Error fetching leaderboard:', err);
@@ -91,14 +67,14 @@ export default function LeaderboardPage() {
     }
 
     fetchLeaderboard();
-  }, [db]);
+  }, []);
 
   return (
     <div className="p-4 md:p-8">
       <Card>
         <CardHeader>
           <CardTitle>Today's Leaderboard</CardTitle>
-          <CardDescription>Top 100 players for today's quiz.</CardDescription>
+          <CardDescription>Top 10 players for today's quiz. (Mock Data)</CardDescription>
         </CardHeader>
         <CardContent>
           {loading && (
