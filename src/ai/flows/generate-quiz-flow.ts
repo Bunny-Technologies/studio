@@ -9,6 +9,7 @@
 
 import {ai} from '@/ai/genkit';
 import {Question} from '@/lib/types';
+import {GenerateResponse, ModelArgument} from 'genkit';
 import {z} from 'genkit';
 
 const QuestionSchema = z.object({
@@ -44,7 +45,7 @@ export async function generateQuiz(input: GenerateQuizInput): Promise<GenerateQu
   return generateQuizFlow(input);
 }
 
-const prompt = ai.definePrompt({
+const generateQuizPrompt = ai.definePrompt({
   name: 'generateQuizPrompt',
   input: {schema: GenerateQuizInputSchema},
   output: {schema: GenerateQuizOutputSchema},
@@ -65,7 +66,34 @@ const generateQuizFlow = ai.defineFlow(
     outputSchema: GenerateQuizOutputSchema,
   },
   async (input) => {
-    const {output} = await prompt(input);
+    // Define primary and fallback models
+    const primaryModel: ModelArgument = 'googleai/gemini-1.5-flash-latest';
+    const fallbackModel: ModelArgument = 'googleai/gemini-pro';
+    let response: GenerateResponse<z.infer<typeof GenerateQuizOutputSchema>>;
+
+    try {
+      // First attempt with the primary model
+      console.log(`Attempting to generate quiz with primary model: ${primaryModel}`);
+      response = await generateQuizPrompt.generate({
+        model: primaryModel,
+        value: input,
+      });
+    } catch (e: any) {
+      // If the primary model fails (e.g., is overloaded), try the fallback
+      console.warn(`Primary model failed: ${e?.message}. Trying fallback model: ${fallbackModel}`);
+      try {
+        response = await generateQuizPrompt.generate({
+          model: fallbackModel,
+          value: input,
+        });
+      } catch (fallbackError: any) {
+        // If the fallback also fails, throw an error
+        console.error(`Fallback model also failed: ${fallbackError?.message}`);
+        throw new Error('Both primary and fallback models failed to generate the quiz.');
+      }
+    }
+    
+    const output = response.output();
     if (!output) {
       throw new Error('Failed to generate quiz questions.');
     }
