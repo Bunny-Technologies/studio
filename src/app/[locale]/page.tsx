@@ -44,7 +44,15 @@ const categories = [
     { name: "HEALTH & EXERCISE", color: "bg-pink-400" },
 ];
 
-const topNavLinks = ["ABOUT US", "ASSOCIATES", "PROGRAMS", "SCHOLARSHIPS", "EVENTS", "QUIZ WINNERS", "ENQUIRY"];
+const topNavLinks = [
+    { href: "/about", label: "ABOUT US" },
+    { href: "/associates", label: "ASSOCIATES" },
+    { href: "/programs", label: "PROGRAMS" },
+    { href: "/scholarships", label: "SCHOLARSHIPS" },
+    { href: "/events", label: "EVENTS" },
+    { href: "/quiz-winners", label: "QUIZ WINNERS" },
+    { href: "/enquiry", label: "ENQUIRY" },
+];
 
 // Components recreated from the image
 function LeftNav() {
@@ -164,7 +172,11 @@ function MainContent() {
                 <HeaderInfo />
 
                 <div className="bg-primary text-primary-foreground p-1 rounded-md text-center text-xs font-bold flex justify-around my-2">
-                    {topNavLinks.map(link => <a href="#" key={link} className="hover:underline">{link}</a>)}
+                    {topNavLinks.map(link => (
+                        <Link href={link.href} key={link.href} className="hover:underline">
+                            {link.label}
+                        </Link>
+                    ))}
                 </div>
                 
                 <p className="text-center font-semibold text-primary mb-2">
