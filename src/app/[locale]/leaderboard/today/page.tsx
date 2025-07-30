@@ -26,18 +26,18 @@ interface LeaderboardEntry {
   userId: string;
 }
 
-// Mock data for the leaderboard
+// Mock data for the leaderboard - you can add more users here!
 const MOCK_LEADERBOARD_DATA: LeaderboardEntry[] = [
-    { rank: 1, name: 'Aarav Sharma', score: 98, userId: 'user1' },
-    { rank: 2, name: 'Vivaan Patel', score: 95, userId: 'user2' },
-    { rank: 3, name: 'Aditya Singh', score: 92, userId: 'user3' },
-    { rank: 4, name: 'Diya Gupta', score: 90, userId: 'user4' },
-    { rank: 5, name: 'Ishaan Kumar', score: 88, userId: 'user5' },
-    { rank: 6, name: 'Ananya Reddy', score: 85, userId: 'user6' },
-    { rank: 7, name: 'Rohan Mehta', score: 83, userId: 'user7' },
-    { rank: 8, name: 'Saanvi Joshi', score: 80, userId: 'user8' },
-    { rank: 9, name: 'Kabir Verma', score: 78, userId: 'user9' },
-    { rank: 10, name: 'Myra Khan', score: 75, userId: 'user10' },
+    { rank: 1, name: 'Priya Rao', score: 99, userId: 'user11' },
+    { rank: 2, name: 'Vikram Reddy', score: 97, userId: 'user12' },
+    { rank: 3, name: 'Aarav Sharma', score: 95, userId: 'user1' },
+    { rank: 4, name: 'Vivaan Patel', score: 92, userId: 'user2' },
+    { rank: 5, name: 'Aditya Singh', score: 90, userId: 'user3' },
+    { rank: 6, name: 'Diya Gupta', score: 88, userId: 'user4' },
+    { rank: 7, name: 'Ishaan Kumar', score: 86, userId: 'user5' },
+    { rank: 8, name: 'Ananya Reddy', score: 84, userId: 'user6' },
+    { rank: 9, name: 'Rohan Mehta', score: 81, userId: 'user7' },
+    { rank: 10, name: 'Saanvi Joshi', score: 79, userId: 'user8' },
 ];
 
 
