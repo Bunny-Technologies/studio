@@ -11,6 +11,10 @@ export const metadata = {
   description: 'An educational platform for students of Telangana.',
 };
 
+export function generateStaticParams() {
+  return [{locale: 'en'}, {locale: 'te'}];
+}
+
 export default async function RootLayout({
   children,
   params: { locale },
