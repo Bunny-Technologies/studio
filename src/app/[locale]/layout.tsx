@@ -1,21 +1,25 @@
-import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, unstable_setRequestLocale } from 'next-intl/server';
-import { Toaster } from '@/components/ui/toaster';
-import '../globals.css';
+import { Space_Grotesk, PT_Sans } from 'next/font/google';
+import { cn } from '@/lib/utils';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const spaceGrotesk = Space_Grotesk({ 
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+});
 
-export const metadata = {
-  title: 'EDU QUIZ WORLD',
-  description: 'An educational platform for students of Telangana.',
-};
+const ptSans = PT_Sans({
+  subsets: ['latin'],
+  variable: '--font-pt-sans',
+  weight: ['400', '700'],
+});
+
 
 export function generateStaticParams() {
   return [{locale: 'en'}, {locale: 'te'}];
 }
 
-export default async function RootLayout({
+export default async function LocaleLayout({
   children,
   params: { locale },
 }: {
@@ -27,13 +31,10 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
-      <body className={inter.className}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
-          <Toaster />
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider locale={locale} messages={messages}>
+        <div className={cn("min-h-screen bg-background font-sans antialiased", spaceGrotesk.variable, ptSans.variable)}>
+            {children}
+        </div>
+    </NextIntlClientProvider>
   );
 }
