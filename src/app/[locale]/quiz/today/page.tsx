@@ -6,7 +6,9 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Terminal, CheckCircle2, XCircle } from 'lucide-react';
+import { Terminal, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
 
 import type { Question, UserProfile } from '@/lib/types';
 import { generateQuiz } from '@/ai/flows/generate-quiz-flow';
@@ -128,24 +130,55 @@ function QuestionRow({
   );
 }
 
-function QuizLoadingSkeleton() {
+const engagingMessages = [
+    "Brewing up some brilliant questions! 🧠",
+    "Getting your quiz ready...",
+    "Assembling atoms of knowledge...",
+    "Sharpening your virtual pencils... ✏️",
+    "Please wait, the Quiz King is thinking! 👑",
+    "Get ready to show what you know!",
+];
+
+function EngagingLoadingState() {
+    const [messageIndex, setMessageIndex] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setMessageIndex(prevIndex => (prevIndex + 1) % engagingMessages.length);
+        }, 2500);
+
+        return () => clearInterval(timer);
+    }, []);
+    
     return (
-        <div className="space-y-4">
-            {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="flex items-start gap-x-4 py-2">
-                    <Skeleton className="h-6 w-10" />
-                    <div className="w-full space-y-3">
-                        <Skeleton className="h-5 w-4/5" />
-                        <div className="flex gap-6">
-                            <Skeleton className="h-5 w-28" />
-                            <Skeleton className="h-5 w-28" />
-                            <Skeleton className="h-5 w-28" />
+        <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center justify-center gap-3">
+                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                    <span>Generating Your Quiz</span>
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="text-center space-y-4">
+                <p className="text-muted-foreground font-semibold h-6">
+                    {engagingMessages[messageIndex]}
+                </p>
+                <div className="space-y-4 pt-4">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="flex items-start gap-x-4 py-2">
+                            <Skeleton className="h-6 w-10 mt-1" />
+                            <div className="w-full space-y-3">
+                                <Skeleton className="h-5 w-4/5" />
+                                <div className="flex gap-6">
+                                    <Skeleton className="h-5 w-28" />
+                                    <Skeleton className="h-5 w-28" />
+                                    <Skeleton className="h-5 w-28" />
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    ))}
                 </div>
-            ))}
-             <p className="text-center text-primary font-semibold">Preparing your daily quiz...</p>
-        </div>
+            </CardContent>
+        </Card>
     );
 }
 
@@ -285,9 +318,8 @@ export default function DailyQuizPage() {
       <div className="max-w-5xl mx-auto bg-white p-4 sm:p-6 rounded-lg shadow-lg">
         <StudentHeader profile={userProfile} score={score} />
         
-        <ResultHeader />
         
-        {loading && <QuizLoadingSkeleton />}
+        {loading && <EngagingLoadingState />}
         
         {error && (
             <Alert variant="destructive">
@@ -299,6 +331,7 @@ export default function DailyQuizPage() {
 
         {!loading && !error && (
             <>
+                <ResultHeader />
                 <div className="space-y-1">
                     {questions.map((q, i) => (
                       <QuestionRow 
@@ -325,5 +358,3 @@ export default function DailyQuizPage() {
     </div>
   );
 }
-
-    
