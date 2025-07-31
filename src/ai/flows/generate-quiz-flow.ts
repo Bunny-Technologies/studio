@@ -39,7 +39,7 @@ const GenerateQuizInputSchema = z.object({
 export type GenerateQuizInput = z.infer<typeof GenerateQuizInputSchema>;
 
 // IMPORTANT: We are constraining the output to always be an array of 25 questions.
-const GenerateQuizOutputSchema = z.array(QuestionSchema).length(25);
+const GenerateQuizOutputSchema = z.array(QuestionSchema);
 export type GenerateQuizOutput = z.infer<typeof GenerateQuizOutputSchema>;
 
 export async function generateQuiz(input: GenerateQuizInput): Promise<GenerateQuizOutput> {
