@@ -134,9 +134,9 @@ function CategoryGrid() {
     return (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {categories.map((cat, index) => (
-                <Button key={index} className={`${cat.color} text-black font-bold text-xs h-16 flex flex-col items-center justify-between shadow-md border-b-4 border-gray-500/50 p-1 whitespace-normal leading-tight`}>
+                <Button key={index} className={`${cat.color} text-black font-bold text-xs h-16 flex flex-col items-center justify-between shadow-md border-b-4 border-gray-500/50 p-1 whitespace-normal leading-tight text-center`}>
                     <div className="self-end border-t-[8px] border-b-[8px] border-r-[10px] border-transparent border-t-gray-600"></div>
-                    <div className="flex-grow flex items-center justify-center text-center">
+                    <div className="flex-grow flex items-center justify-center">
                         {cat.name}
                     </div>
                 </Button>
@@ -184,7 +184,7 @@ function MobileNav() {
                         <span className="sr-only">Open navigation menu</span>
                     </Button>
                 </SheetTrigger>
-                <SheetContent side="left">
+                <SheetContent side="left" className="bg-background">
                     <div className="grid gap-4 py-6">
                          {topNavLinks.map(link => (
                             <Link 
@@ -210,17 +210,14 @@ function MobileNav() {
 function MainContent() {
     return (
         <main className="flex-1 p-2 flex flex-col">
-            <div>
-                 {/* Mobile Nav Trigger */}
-                 <div className="flex justify-between items-center my-2 md:hidden">
-                    <MobileNav />
-                    <h1 className="text-lg font-bold text-primary">EduQuiz.world</h1>
-                </div>
-
-                <HeaderInfo />
-
-                {/* Desktop Nav */}
-                <div className="bg-primary text-primary-foreground p-1 rounded-md text-center text-xs font-bold flex-wrap justify-around my-2 hidden md:flex">
+            <div className="md:hidden flex justify-between items-center my-2">
+                <MobileNav />
+                <h1 className="text-lg font-bold text-primary">EduQuiz.world</h1>
+            </div>
+            
+            <div className="hidden md:block">
+                 {/* Desktop Nav */}
+                <div className="bg-primary text-primary-foreground p-1 rounded-md text-center text-xs font-bold flex-wrap justify-around my-2 flex">
                     {topNavLinks.map(link => (
                         <Link href={link.href} key={link.href} className="hover:underline px-2">
                             {link.label}
@@ -228,14 +225,16 @@ function MainContent() {
                     ))}
                 </div>
                 
-                <p className="text-center font-semibold text-primary my-2 hidden md:block">
+                <p className="text-center font-semibold text-primary my-2">
                     <Link href="/faculty" className="hover:underline">
                         Faculty Login form to enter the Quiz Bits & key:
                     </Link>
                 </p>
             </div>
 
-            <div className="flex-grow grid md:grid-cols-2 gap-4 items-center">
+            <HeaderInfo />
+
+            <div className="flex-grow grid md:grid-cols-2 gap-4 items-center mt-4">
                 <LiveStream />
                 <CategoryGrid />
             </div>
