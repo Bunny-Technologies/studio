@@ -38,11 +38,15 @@ const GenerateQuizInputSchema = z.object({
 });
 export type GenerateQuizInput = z.infer<typeof GenerateQuizInputSchema>;
 
-const GenerateQuizOutputSchema = z.array(QuestionSchema);
+// IMPORTANT: We are constraining the output to always be an array of 25 questions.
+const GenerateQuizOutputSchema = z.array(QuestionSchema).length(25);
 export type GenerateQuizOutput = z.infer<typeof GenerateQuizOutputSchema>;
 
 export async function generateQuiz(input: GenerateQuizInput): Promise<GenerateQuizOutput> {
-  return generateQuizFlow(input);
+  // We are hard-coding count to 25 to match the schema.
+  // The input parameter is kept for potential future flexibility.
+  const forcedInput = {...input, count: 25};
+  return generateQuizFlow(forcedInput);
 }
 
 const generateQuizPrompt = ai.definePrompt({
@@ -51,11 +55,11 @@ const generateQuizPrompt = ai.definePrompt({
   output: {schema: GenerateQuizOutputSchema},
   prompt: `You are an expert quiz creator for students in Telangana, India.
   
-  Generate {{count}} quiz questions in the {{language}} language for the category: "{{category}}".
+  Generate EXACTLY {{count}} quiz questions in the {{language}} language for the category: "{{category}}".
   The questions should be appropriate for a student in {{studentClass}}.
   
   Each question must have exactly three options.
-  The output must be a JSON array of questions matching the provided schema. Ensure the response is only the JSON array.
+  The output must be a JSON array of EXACTLY {{count}} questions matching the provided schema. Ensure the response is only the JSON array.
   `,
 });
 
@@ -97,7 +101,9 @@ const generateQuizFlow = ai.defineFlow(
     if (!output) {
       throw new Error('Failed to generate quiz questions.');
     }
-    // The model sometimes doesn't perfectly adhere to the count, so we slice it.
-    return output.slice(0, input.count);
+    // The schema now enforces 25 questions, so we can return directly.
+    return output;
   }
 );
+
+    
