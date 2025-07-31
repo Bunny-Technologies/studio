@@ -30,6 +30,17 @@ const loginSchema = z.object({
   idNo: z.string().min(1, {message: "ID No. is required."}),
 });
 
+function RewardsBanner() {
+    return (
+        <div className="w-full max-w-md bg-yellow-200 border-2 border-yellow-400 p-4 rounded-lg text-xs text-yellow-900 mb-6">
+            <p>A). Daily Participants: 40% to 50% Gift Vouchers on Gadgets + Gifts for first 1000 rankers</p>
+            <p>B) 30 days regular participants: Month end gifts and felicitation at near by College.</p>
+            <p>C) 365 days participants: Top 100 nos. 1 lakh Study Scholarship with Privilege Merit Cards</p>
+            <p className="text-center mt-1">Every month end an open debate will be conducted in your near by Jr.college for Event & Prizes** Relay in TV & social Media</p>
+        </div>
+    );
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const t = useTranslations('Login');
@@ -66,7 +77,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
+      <RewardsBanner />
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>{t('title')}</CardTitle>
