@@ -104,18 +104,12 @@ const generateQuizFlow = ai.defineFlow(
     try {
       // First attempt with the primary model
       console.log(`Attempting to generate quiz with primary model: ${primaryModel}`);
-      response = await generateQuizPrompt({
-        model: primaryModel,
-        input: input,
-      });
+      response = await generateQuizPrompt(input, { model: primaryModel as ModelArgument });
     } catch (e: any) {
       // If the primary model fails (e.g., is overloaded), try the fallback
       console.warn(`Primary model failed: ${e?.message}. Trying fallback model: ${fallbackModel}`);
       try {
-        response = await generateQuizPrompt({
-          model: fallbackModel,
-          input: input,
-        });
+        response = await generateQuizPrompt(input, { model: fallbackModel as ModelArgument });
       } catch (fallbackError: any) {
         // If the fallback also fails, throw an error
         console.error(`Fallback model also failed: ${fallbackError?.message}`);
