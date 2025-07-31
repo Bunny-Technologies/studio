@@ -67,24 +67,24 @@ const generateQuizFlow = ai.defineFlow(
   },
   async (input) => {
     // Define primary and fallback models
-    const primaryModel: ModelArgument = 'googleai/gemini-1.5-flash-latest';
-    const fallbackModel: ModelArgument = 'googleai/gemini-pro';
+    const primaryModel = 'googleai/gemini-1.5-flash-latest';
+    const fallbackModel = 'googleai/gemini-pro';
     let response: GenerateResponse<z.infer<typeof GenerateQuizOutputSchema>>;
 
     try {
       // First attempt with the primary model
       console.log(`Attempting to generate quiz with primary model: ${primaryModel}`);
-      response = await generateQuizPrompt.generate({
+      response = await generateQuizPrompt({
         model: primaryModel,
-        value: input,
+        input: input,
       });
     } catch (e: any) {
       // If the primary model fails (e.g., is overloaded), try the fallback
       console.warn(`Primary model failed: ${e?.message}. Trying fallback model: ${fallbackModel}`);
       try {
-        response = await generateQuizPrompt.generate({
+        response = await generateQuizPrompt({
           model: fallbackModel,
-          value: input,
+          input: input,
         });
       } catch (fallbackError: any) {
         // If the fallback also fails, throw an error
@@ -93,7 +93,7 @@ const generateQuizFlow = ai.defineFlow(
       }
     }
     
-    const output = response.output();
+    const output = response.output;
     if (!output) {
       throw new Error('Failed to generate quiz questions.');
     }
