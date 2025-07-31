@@ -8,37 +8,6 @@ import {
 } from '@/components/ui/card';
 import { Users, Goal, Eye } from 'lucide-react';
 
-const teamMembers = [
-    {
-        name: 'Dr. Aruna Sharma',
-        role: 'Founder & CEO',
-        avatar: 'https://placehold.co/100x100.png',
-        fallback: 'AS',
-        hint: 'woman portrait',
-    },
-    {
-        name: 'Vikram Singh',
-        role: 'Chief Technology Officer',
-        avatar: 'https://placehold.co/100x100.png',
-        fallback: 'VS',
-        hint: 'man portrait',
-    },
-    {
-        name: 'Priya Desai',
-        role: 'Head of Content',
-        avatar: 'https://placehold.co/100x100.png',
-        fallback: 'PD',
-        hint: 'woman professional',
-    },
-    {
-        name: 'Rohan Mehta',
-        role: 'Community Manager',
-        avatar: 'https://placehold.co/100x100.png',
-        fallback: 'RM',
-        hint: 'man professional',
-    }
-]
-
 export default function AboutPage() {
   return (
     <div className="p-4 md:p-8 space-y-8">
@@ -85,30 +54,6 @@ export default function AboutPage() {
             </CardContent>
         </Card>
       </div>
-
-      <Card>
-        <CardHeader>
-            <div className="flex items-center gap-4">
-                 <Users className="w-8 h-8 text-primary" />
-                <CardTitle>Meet the Team</CardTitle>
-            </div>
-          <CardDescription>
-            The passionate individuals behind EduQuiz.world.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {teamMembers.map(member => (
-            <div key={member.name} className="flex flex-col items-center text-center">
-                <Avatar className="w-24 h-24 mb-2">
-                    <AvatarImage src={member.avatar} alt={member.name} data-ai-hint={member.hint} />
-                    <AvatarFallback>{member.fallback}</AvatarFallback>
-                </Avatar>
-                <h3 className="font-semibold">{member.name}</h3>
-                <p className="text-sm text-muted-foreground">{member.role}</p>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
     </div>
   );
 }
