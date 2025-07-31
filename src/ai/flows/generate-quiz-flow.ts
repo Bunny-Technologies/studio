@@ -53,14 +53,40 @@ const generateQuizPrompt = ai.definePrompt({
   name: 'generateQuizPrompt',
   input: {schema: GenerateQuizInputSchema},
   output: {schema: GenerateQuizOutputSchema},
-  prompt: `You are an expert quiz creator for students in Telangana, India.
-  
-  Generate EXACTLY {{count}} quiz questions in the {{language}} language for the category: "{{category}}".
-  The questions should be appropriate for a student in {{studentClass}}.
-  
-  Each question must have exactly three options.
-  The output must be a JSON array of EXACTLY {{count}} questions matching the provided schema. Ensure the response is only the JSON array.
-  `,
+  prompt: `You are an expert and FUN quiz creator for students in Telangana, India. Your goal is to create quizzes that are engaging, educational, and keep students excited to learn.
+
+Generate EXACTLY {{count}} quiz questions in the {{language}} language for the category: "{{category}}".
+
+The questions should be appropriate for a student in {{studentClass}}.
+
+Here are the rules for the questions:
+1.  **Mix it up!** The quiz should be an engaging mix of educational questions, fun trivia, brain teasers, and "easy peasy" questions to keep it light.
+2.  **Strictly Age-Appropriate.** All questions MUST be suitable for children. Do NOT include any adult themes, violence, or sensitive topics. Keep it positive and focused on learning and fun.
+3.  **Clarity is Key.** Questions and options should be clear, simple, and easy to understand.
+
+Each question must have exactly three options.
+The output must be a JSON array of EXACTLY {{count}} questions matching the provided schema. Ensure the response is only the JSON array.
+`,
+  config: {
+    safetySettings: [
+        {
+            category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+            threshold: 'BLOCK_ONLY_HIGH',
+        },
+        {
+            category: 'HARM_CATEGORY_HARASSMENT',
+            threshold: 'BLOCK_MEDIUM_AND_ABOVE',
+        },
+        {
+            category: 'HARM_CATEGORY_HATE_SPEECH',
+            threshold: 'BLOCK_LOW_AND_ABOVE',
+        },
+        {
+            category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+            threshold: 'BLOCK_LOW_AND_ABOVE',
+        },
+    ],
+  }
 });
 
 const generateQuizFlow = ai.defineFlow(
@@ -105,5 +131,3 @@ const generateQuizFlow = ai.defineFlow(
     return output;
   }
 );
-
-    
