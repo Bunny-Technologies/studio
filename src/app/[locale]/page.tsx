@@ -184,7 +184,7 @@ function MobileNav() {
                         <span className="sr-only">Open navigation menu</span>
                     </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="bg-background p-0">
+                <SheetContent side="left" className="bg-background p-0 w-screen h-screen">
                     <div className="grid gap-4 py-6">
                          <div className="text-center pb-4 border-b">
                             <h2 className="text-xl font-bold text-primary">EDU QUIZ.WORLD</h2>
