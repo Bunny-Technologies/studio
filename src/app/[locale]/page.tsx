@@ -184,19 +184,22 @@ function MobileNav() {
                         <span className="sr-only">Open navigation menu</span>
                     </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="bg-background">
+                <SheetContent side="left" className="bg-background p-0">
                     <div className="grid gap-4 py-6">
+                         <div className="text-center pb-4 border-b">
+                            <h2 className="text-xl font-bold text-primary">EDU QUIZ.WORLD</h2>
+                        </div>
                          {topNavLinks.map(link => (
                             <Link 
                                 href={link.href} 
                                 key={link.href} 
-                                className="text-lg font-medium hover:underline"
+                                className="text-lg font-medium hover:underline px-6"
                             >
                                 {link.label}
                             </Link>
                         ))}
-                        <div className="border-t pt-4">
-                             <Link href="/faculty" className="text-lg font-medium hover:underline text-primary">
+                        <div className="border-t pt-4 mt-4">
+                             <Link href="/faculty" className="text-lg font-medium hover:underline text-primary px-6">
                                 Faculty Login
                             </Link>
                         </div>
