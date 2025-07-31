@@ -3,8 +3,14 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { Star } from 'lucide-react';
+import { Star, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+
 
 // Mock Data based on the image
 const searchItems = [
@@ -165,12 +171,41 @@ function LiveStream() {
     );
 }
 
+function MobileNav() {
+    return (
+        <div className="md:hidden">
+            <Sheet>
+                <SheetTrigger asChild>
+                    <Button variant="outline" size="icon">
+                        <Menu className="h-6 w-6" />
+                        <span className="sr-only">Open navigation menu</span>
+                    </Button>
+                </SheetTrigger>
+                <SheetContent side="left">
+                    <div className="grid gap-4 py-6">
+                         {topNavLinks.map(link => (
+                            <Link 
+                                href={link.href} 
+                                key={link.href} 
+                                className="text-lg font-medium hover:underline"
+                            >
+                                {link.label}
+                            </Link>
+                        ))}
+                    </div>
+                </SheetContent>
+            </Sheet>
+        </div>
+    )
+}
+
 function MainContent() {
     return (
         <main className="flex-1 p-2 flex flex-col">
             <div>
                 <HeaderInfo />
 
+                {/* Desktop Nav */}
                 <div className="bg-primary text-primary-foreground p-1 rounded-md text-center text-xs font-bold flex-wrap justify-around my-2 hidden md:flex">
                     {topNavLinks.map(link => (
                         <Link href={link.href} key={link.href} className="hover:underline px-2">
@@ -178,8 +213,18 @@ function MainContent() {
                         </Link>
                     ))}
                 </div>
+
+                {/* Mobile Nav Trigger */}
+                 <div className="flex justify-between items-center my-2 md:hidden">
+                    <MobileNav />
+                     <p className="text-center font-semibold text-primary">
+                        <Link href="/faculty" className="hover:underline text-sm">
+                            Faculty Login
+                        </Link>
+                    </p>
+                </div>
                 
-                <p className="text-center font-semibold text-primary my-2 md:mb-2">
+                <p className="text-center font-semibold text-primary my-2 hidden md:block">
                     <Link href="/faculty" className="hover:underline">
                         Faculty Login form to enter the Quiz Bits & key:
                     </Link>
