@@ -195,6 +195,11 @@ function MobileNav() {
                                 {link.label}
                             </Link>
                         ))}
+                        <div className="border-t pt-4">
+                             <Link href="/faculty" className="text-lg font-medium hover:underline text-primary">
+                                Faculty Login
+                            </Link>
+                        </div>
                     </div>
                 </SheetContent>
             </Sheet>
@@ -206,6 +211,12 @@ function MainContent() {
     return (
         <main className="flex-1 p-2 flex flex-col">
             <div>
+                 {/* Mobile Nav Trigger */}
+                 <div className="flex justify-between items-center my-2 md:hidden">
+                    <MobileNav />
+                    <h1 className="text-lg font-bold text-primary">EduQuiz.world</h1>
+                </div>
+
                 <HeaderInfo />
 
                 {/* Desktop Nav */}
@@ -215,16 +226,6 @@ function MainContent() {
                             {link.label}
                         </Link>
                     ))}
-                </div>
-
-                {/* Mobile Nav Trigger */}
-                 <div className="flex justify-between items-center my-2 md:hidden">
-                    <MobileNav />
-                     <p className="text-center font-semibold text-primary">
-                        <Link href="/faculty" className="hover:underline text-sm">
-                            Faculty Login
-                        </Link>
-                    </p>
                 </div>
                 
                 <p className="text-center font-semibold text-primary my-2 hidden md:block">
