@@ -88,9 +88,11 @@ function LeftNav() {
 function RightNav() {
     return (
         <aside className="w-8 bg-primary text-primary-foreground items-center justify-center hidden md:flex">
-            <h2 className="writing-vertical-rl rotate-180 font-bold tracking-wider">
-                VALUABLE SUGGESTIONS
-            </h2>
+           <Link href="/suggestions" className="flex items-center justify-center w-full h-full">
+                <h2 className="writing-vertical-rl rotate-180 font-bold tracking-wider">
+                    VALUABLE SUGGESTIONS
+                </h2>
+            </Link>
         </aside>
     );
 }
@@ -99,9 +101,10 @@ function HeaderInfo() {
     const [time, setTime] = useState<Date | null>(null);
 
     useEffect(() => {
+        // This will only run on the client, after initial hydration
         const timerId = setInterval(() => setTime(new Date()), 1000);
         return () => clearInterval(timerId);
-    }, []);
+      }, []);
 
     return (
         <header className="grid grid-cols-1 md:grid-cols-2 gap-4">
