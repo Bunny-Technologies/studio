@@ -132,11 +132,11 @@ function HeaderInfo() {
 
 function CategoryGrid() {
     return (
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {categories.map((cat, index) => (
-                <Button key={index} className={`${cat.color} text-black font-bold text-xs h-16 flex flex-col items-center justify-between shadow-md border-b-4 border-gray-500/50 p-1`}>
+                <Button key={index} className={`${cat.color} text-black font-bold text-xs h-16 flex flex-col items-center justify-between shadow-md border-b-4 border-gray-500/50 p-1 whitespace-normal leading-tight`}>
                     <div className="self-end border-t-[8px] border-b-[8px] border-r-[10px] border-transparent border-t-gray-600"></div>
-                    <div className="flex-grow flex items-center justify-center text-center leading-tight">
+                    <div className="flex-grow flex items-center justify-center text-center">
                         {cat.name}
                     </div>
                 </Button>
